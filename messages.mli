@@ -1,18 +1,16 @@
-type hash = bytes [@@deriving yojson]
-type signature = bytes [@@deriving yojson]
-type pkh = hash [@@deriving yojson]
+type hash = bytes [@@deriving yojson,show]
+type signature = bytes [@@deriving yojson,show]
+type pkh = hash [@@deriving yojson,show]
 (* type pk = bytes  [@@deriving yojson] *)
 
 type pk = Bigstring.t 
-            [@to_yojson Hex.of_bigstring]
-            [@of_yojson Hex.to_bigstring]               
-            [@@deriving yojson]
+            [@@deriving yojson,show]
         
-type period = int [@@deriving yojson]
+type period = int [@@deriving yojson,show]
 
-type author_id = pk  [@@deriving yojson]
+type author_id = pk  [@@deriving yojson,show]
 
-type politician_id = pk  [@@deriving yojson]
+type politician_id = pk  [@@deriving yojson,show]
    
                
 type letter =
@@ -21,21 +19,21 @@ type letter =
     id : author_id ;
     signature : signature
   }
-    [@@deriving yojson]
+    [@@deriving yojson,show]
 
 type word = {
     word : letter list ;
     head : hash ;
     id : politician_id ;
     signature : signature
-  } [@@deriving yojson]
+  } [@@deriving yojson,show]
     
 type mempool =
-  {period : int ; letters : letter list } [@@deriving yojson]
+  {period : int ; letters : letter list } [@@deriving yojson,show]
 
   
 
-type diff_mempool_arg = {since : period; mempool : mempool}[@@deriving yojson]
+type diff_mempool_arg = {since : period; mempool : mempool}[@@deriving yojson,show]
   
 type message =
   | Register of author_id
@@ -45,11 +43,11 @@ type message =
   | Get_mempool_since of period
   | Inject_letter of letter
   | Inject_word of word
-  | Inject_raw_op of bytes[@@deriving yojson]
+  | Inject_raw_op of bytes[@@deriving yojson,show]
 
-val decode : Lwt_unix.file_descr -> (message, string) result Lwt.t
+val receive : Lwt_unix.file_descr -> (message, string) result Lwt.t
 
-val encode : message -> Lwt_unix.file_descr -> unit Lwt.t
+val send : message -> Lwt_unix.file_descr -> unit Lwt.t
 
 (* let encoding msg_encoding =
  *   let open Data_encoding in

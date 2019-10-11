@@ -1,19 +1,26 @@
-type 'data t =
-  {mutable data : 'data list;
-   add_callback : 'data -> 'data t -> unit Lwt.t;
-   remove_callback : 'data -> 'data t -> unit Lwt.t
+type ('key, 'data) t =
+  {mutable data : ('key*'data) list;
+   add_callback : ('key*'data) -> ('key,'data) t -> unit Lwt.t;
+   remove_callback : ('key*'data) -> ('key,'data) t -> unit Lwt.t
   }
 
-let add pool data =
-  pool.data <- data::pool.data;
-  pool.add_callback data pool
+let add pool key data =
+  pool.data <- (key,data)::pool.data;
+  pool.add_callback (key,data) pool
 
-let removepool pool data =
-  pool.data <- List.filter (fun d -> d <> data) pool.data;
-  pool.remove_callback data pool
+let remove pool key =
+  let data =  List.assoc_opt key pool.data in
+  pool.data <- List.remove_assoc key pool.data;
+  Option.iter
+    (fun data -> ignore (pool.remove_callback (key,data) pool))
+    data
 
 let map pool f =
   List.map f pool.data
-                       
 
+let create
+      ?(add_callback=fun _ _ -> Lwt.return_unit)
+      ?(remove_callback=fun _ _ -> Lwt.return_unit)
+      ()=
+  { data = [] ; add_callback; remove_callback}
                                                                   

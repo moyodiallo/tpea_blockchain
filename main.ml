@@ -19,17 +19,17 @@ let _ =
       |> Format.printf "json: '%a'@."(Yojson.Safe.pretty_print ~std:false) ;
 
       
-      let test_decoding msg =
+      let _test_decoding msg =
         let _ = Format.printf "Testing %a@." json_pp msg in
         let%lwt f = Lwt_unix.openfile "test.test"
                       [Lwt_unix.O_WRONLY ;
                        Lwt_unix.O_TRUNC ; Lwt_unix.O_CREAT ] 0o666 in
         let%lwt _ = Format.printf "test opened@." ; Lwt.return_unit in
-        let%lwt () = Messages.encode msg  f in
+        let%lwt () = Messages.send msg  f in
         let%lwt () = Lwt_unix.close f in
         let _ = Format.printf "re-open test@." in
         let%lwt f = Lwt_unix.openfile "test.test" [Lwt_unix.O_RDONLY] 0 in
-        let%lwt maybe_message = Messages.decode f in
+        let%lwt maybe_message = Messages.receive f in
         let%lwt () = Lwt_unix.close f in
         match maybe_message with
           Ok message -> Lwt.return @@
@@ -43,9 +43,15 @@ let _ =
                               json_pp message
         | Error b -> Lwt.return @@ Format.printf "Error %s@." b
       in
-      (* let%lwt () = *)
-      test_decoding  (Register (pk_bytes))
-      (* in
-       * test_decoding  (Get_full_mempool)  *)
+      let%lwt () =
+        _test_decoding  (Register (pk_bytes))
+      in
+      (* test_decoding  (Get_full_mempool) *)
+      let netpool = Netpool.create () in
+      let%lwt server = Server.create
+                         (* ~addr:(Unix.inet_addr_of_string "127.0.0.1") *)
+                         ~backlog:100 netpool 12345 in
+      Server.activate server;
+      Lwt.wait() |> fst
     end           
     
