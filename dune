@@ -1,5 +1,5 @@
-(executable
- (name main)
+(library
+ (name lib)
  (public_name scrabblos)
  (libraries
         yojson

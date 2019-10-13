@@ -34,7 +34,7 @@ let rec worker_loop st =
   match addr with
   | Lwt_unix.ADDR_UNIX _ -> assert false
   | Lwt_unix.ADDR_INET (addr, port) ->
-     Lwt.async (fun () -> Netpool.accept st.netpool fd (addr, port)) ;
+     Lwt.async (fun () -> Netpool.accept ~callback:Answerer.answer st.netpool fd (addr, port)) ;
      worker_loop st
 
 let create_listening_socket ~backlog ?(addr = Unix.inet6_addr_any) port =
@@ -53,25 +53,25 @@ let create ?addr ~backlog netpool port =
     let st = { socket ; netpool } in
     Lwt.return st
     end begin fun exn ->
-    Format.eprintf
+    Log.log_error
     "@[<v 2>Cannot accept incoming connections@ %s@ address %s:%a@.@]"
     (Printexc.to_string exn)
     (Unix.string_of_inet_addr (Option.value addr ~default:Unix.inet_addr_any))
     Format.pp_print_int port
     ;
     Lwt.fail exn
-    
+
     end
 
 let activate st =
   Lwt.async (fun () ->
       Lwt.catch (fun () ->
-          Format.printf "Server's welcome loop started@.";
+          Log.log_info "Server's welcome loop started@.";
           let%lwt _wroker = worker_loop st in
-          Format.printf "Server's welcome loop stopped@.";
+          Log.log_info "Server's welcome loop stopped@.";
           Lwt.return_unit
         )
         ( fun _ ->
-          Format.printf "Server's welcome loop stopped@.";
+          Log.log_info "Server's welcome loop stopped@.";
           Lwt_unix.close st.socket)
     )

@@ -1,0 +1,2 @@
+#require "scrabblos";;
+Lib__Main.serve() ;;

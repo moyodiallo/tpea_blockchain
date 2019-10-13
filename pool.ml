@@ -18,9 +18,17 @@ let remove pool key =
 let map pool f =
   List.map f pool.data
 
+let iter pool f =
+  List.iter f pool.data
+
+let iter_p pool f =
+  Lwt_list.iter_p f pool.data
+
+let iter_s pool f =
+  Lwt_list.iter_s f pool.data
+
 let create
       ?(add_callback=fun _ _ -> Lwt.return_unit)
       ?(remove_callback=fun _ _ -> Lwt.return_unit)
       ()=
   { data = [] ; add_callback; remove_callback}
-                                                                  
