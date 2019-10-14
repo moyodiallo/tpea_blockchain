@@ -9,6 +9,7 @@ type politician_id = pk  [@@deriving yojson,show]
 
 type letter =
   { letter : char ;
+    period : period ;
     head : hash ;
     author : author_id ;
     signature : signature
@@ -25,25 +26,14 @@ type word = {
 
 
 type letterpool =
-  {mutable period : int ; mutable letters : (int*letter) list } [@@deriving
-                                                     yojson,show]
-val add_letter : letterpool -> period -> letter -> unit
-val remove_letter : letterpool -> letter -> unit
-val next_period_letter : letterpool -> unit
-val find_by_author :
-  letterpool ->
-  ?period:(period->bool) ->
-  author_id ->
-  (int*letter) list
+  {mutable current_period : period ;
+   mutable next_period : period ;
+   mutable letters : (int*letter) list } [@@deriving yojson,show]
 
 type wordpool =
-  {mutable period : int ; mutable words : (int*word) list } [@@deriving
-                                                     yojson,show]
-val add_word : wordpool -> period -> word -> unit
-val next_period_word : wordpool -> unit
-
-val init_letterpool : letterpool
-val init_wordpool : wordpool
+  {mutable current_period : period ;
+   mutable next_period : period ;
+   mutable words : (int*word) list } [@@deriving yojson,show]
 
 type diff_letterpool_arg = {since : period; letterpool : letterpool}[@@deriving yojson,show]
 type diff_wordpool_arg = {since : period; wordpool : wordpool}[@@deriving yojson,show]
@@ -52,6 +42,7 @@ type message =
   | Register of author_id
   | Listen
   | Stop_listen
+  | Next_turn of period
   | Letters_bag of char list
   | Full_letterpool of letterpool
   | Full_wordpool of wordpool

@@ -34,16 +34,16 @@ let sign_letter_alt ~sk ~c ~head ~author =
   sign ~sk ~msg
 
 
-let make_letter_on_block bag c block : letter =
+let make_letter_on_block bag period block c : letter =
   let head = hash block in
   let signature =
     sign_letter ~sk:bag.sk ~c ~head ~author:bag.author in
   let signature_alt =
     sign_letter_alt ~sk:bag.sk ~c ~head ~author:bag.author in
   assert (signature_alt = signature);
-  { letter=c ; head; author=bag.author; signature }
+  { letter=c ; period; head; author=bag.author; signature }
 
-let make_letter_on_hash bag c head_hash : letter=
+let make_letter_on_hash bag period  head_hash c : letter=
   let head = head_hash in
   let signature = sign_letter ~sk:bag.sk ~c ~head ~author:bag.author in
-  { letter=c ; head; author=bag.author; signature }
+  { letter=c ; period; head; author=bag.author; signature }

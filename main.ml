@@ -1,14 +1,14 @@
-
 open Messages
 
 let json_pp ppf msg_yo =
   Yojson.Safe.pretty_print ~std:false ppf (message_to_yojson msg_yo)
 
 let serve () =
-      let netpool = Netpool.create () in
+      let netpoolos = Netpool.create () in
+      let mempoolos = Mempool.create () in
       let%lwt server = Server.create
                          (* ~addr:(Unix.inet_addr_of_string "127.0.0.1") *)
-                         ~backlog:100 netpool 12345 in
+                         ~backlog:100 ~netpoolos ~mempoolos 12345 in
       Server.activate server;
       Lwt.wait() |> fst
 
@@ -54,31 +54,31 @@ let _ =
       (* let () =
        *   _print_encodings  ()
        * in *)
-      let%lwt () =
-        _test_decoding  (Register pk)
-      in
-      let%lwt () = _test_decoding  (Listen)
-      in
-      let%lwt () = _test_decoding  (Stop_listen)
-      in
-      let%lwt () = _test_decoding  (Get_full_letterpool)
-      in
-      let%lwt () = _test_decoding  (Get_full_wordpool)
-      in
-      let%lwt () = _test_decoding  (Get_letterpool_since 1)
-      in
-      let%lwt () = _test_decoding  (Get_wordpool_since 1)
-      in
-      let%lwt () = _test_decoding  (Letters_bag ['a';Char.chr @@ Random.int (255)])
-      in
-      let%lwt () = _test_decoding  (Full_letterpool {period=0;letters=[]})
-      in
-      let%lwt () = _test_decoding  (Diff_letterpool {since=0;letterpool={period=0;letters=[]}})
-      in
-      let%lwt () = _test_decoding  (Full_wordpool {period=0;words=[]})
-      in
-      let%lwt () = _test_decoding  (Diff_wordpool {since=0;wordpool={period=0;words=[]}})
-      in
+      (* let%lwt () =
+       *   _test_decoding  (Register pk)
+       * in
+       * let%lwt () = _test_decoding  (Listen)
+       * in
+       * let%lwt () = _test_decoding  (Stop_listen)
+       * in
+       * let%lwt () = _test_decoding  (Get_full_letterpool)
+       * in
+       * let%lwt () = _test_decoding  (Get_full_wordpool)
+       * in
+       * let%lwt () = _test_decoding  (Get_letterpool_since 1)
+       * in
+       * let%lwt () = _test_decoding  (Get_wordpool_since 1)
+       * in
+       * let%lwt () = _test_decoding  (Letters_bag ['a';Char.chr @@ Random.int (255)])
+       * in
+       * let%lwt () = _test_decoding  (Full_letterpool {period=0;letters=[]})
+       * in
+       * let%lwt () = _test_decoding  (Diff_letterpool {since=0;letterpool={period=0;letters=[]}})
+       * in
+       * let%lwt () = _test_decoding  (Full_wordpool {period=0;words=[]})
+       * in
+       * let%lwt () = _test_decoding  (Diff_wordpool {since=0;wordpool={period=0;words=[]}})
+       * in *)
        Lwt.return_unit
       (* test_decoding  (Get_full_mempool) *)
     end

@@ -3,6 +3,11 @@ type hash  [@@deriving yojson,show]
 
 val hash_to_bigstring :  hash -> Bigstring.t
 (** cast a hash into the bigstring type   *)
+val hash_of_bigstring :  Bigstring.t -> hash
+(** Cast a bigstring into a hash. Unsafe. 
+    Will fail if the bigstring has not the size of a hash.
+    current implementation has size [Hacl.Hash.256.bytes]
+ *)
 
 val hash : Bigstring.t -> hash
 val hash_list : Bigstring.t list -> hash

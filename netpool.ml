@@ -8,16 +8,15 @@ type conn =  { point : point ;
 type pool =
   { poolos : (point,conn) Pool.t ;
     broadcastpoolos : (point,conn) Pool.t ;
-    letterpoolos : Messages.letterpool ;
-    wordpoolos : Messages.wordpool ;
-    mutable current_period : int;
-    default_callback : worker_state -> (Messages.message, string) result  -> unit Lwt.t }
+ }
 
 and worker_state = {
-    pool : pool ;
+    netpoolos : pool ;
+    mempoolos :  Mempool.mempool;
     point : point ;
     fd : Lwt_unix.file_descr ;
-    callback : worker_state -> (Messages.message, string) result  -> unit Lwt.t
+    callback :   
+      worker_state -> (Messages.message, string) result  -> unit Lwt.t
   }
 
 let rec worker_loop (st:worker_state) =
@@ -36,21 +35,11 @@ let pp_may_message ppf may_message =
 
 let create () =
   let broadcastpoolos  = Pool.create () in
-  {current_period =0;
-    broadcastpoolos;
+  { broadcastpoolos;
     poolos = Pool.create
                ~remove_callback:(fun (point,_) _ ->
                  Pool.remove broadcastpoolos point; Lwt.return_unit )
-               ();
-   letterpoolos = Messages.init_letterpool;
-   wordpoolos = Messages.init_wordpool;
-   default_callback =
-     fun _ msg ->
-     Log.log_info
-       "@[<v 2>Received: %a@]@."
-       pp_may_message
-       msg;
-     Lwt.return_unit
+               ()
   }
 
 let pp_point ppf (addr,port) =
@@ -58,21 +47,22 @@ let pp_point ppf (addr,port) =
     (Unix.string_of_inet_addr addr)
     port
 
-let accept (pool:pool) ?callback fd (addr,port) =
+let accept (netpoolos:pool) mempoolos ~callback fd (addr,port) =
   let point = {addr;port} in
-  let%lwt () =  Pool.add pool.poolos point {point;fd} in
+  let%lwt () =  Pool.add netpoolos.poolos point {point;fd} in
   Lwt.catch begin fun () ->
     Log.log_info "STARTING: Answering loop started for %a@."
     pp_point (addr,port)
     ;
-      worker_loop {point;
-                   fd;
-                 callback =
-                   Option.value callback
-                     ~default:pool.default_callback;
-                 pool}
+      worker_loop {
+          netpoolos;
+          mempoolos ;
+          point;
+          fd;
+          callback
+        }
     end
     begin fun _exn ->
     let _ = Log.log_info "STOPPING: answerer for %a@."
               pp_point (addr,port) in
-    Pool.remove pool.poolos {addr;port}; Lwt.return_unit end
+    Pool.remove netpoolos.poolos {addr;port}; Lwt.return_unit end

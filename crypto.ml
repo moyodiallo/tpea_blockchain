@@ -1,25 +1,6 @@
 open Hacl
 open Error
-
-(* utilities  *)
-let hex_of_hexstring str : Hex.t=
-  `Hex str
-
-let bigstring_to_yojson (bs:Bigstring.t) : Yojson.Safe.t=
-    [%to_yojson: string]
-    @@ (Format.asprintf "%a" Hex.pp)
-    @@ Hex.of_bigstring  bs
-
-let bigstring_of_yojson (bsj:Yojson.Safe.t) =
-  ( [%of_yojson: string] bsj) >>?
-     hex_of_hexstring  >>?
-     Hex.to_bigstring
-
-let pp_bs ppf bs =
-  Hex.of_bigstring bs |> Hex.pp ppf
-
-let show_bs bs =
-  Format.asprintf "%a" pp_bs bs
+open Utils
 
 (** Hash  *)
 type hash = Bigstring.t
@@ -32,7 +13,9 @@ let hash_to_yojson = bigstring_to_yojson
 let hash_of_yojson = bigstring_of_yojson
 
 let hash_to_bigstring s=s
-(* let hash_of_bigstring s=s *)
+let hash_of_bigstring s=
+  assert (Bigstring.length s = Hash.SHA256.bytes);
+  s
 
 
 let hash bigs =

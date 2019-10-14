@@ -1,17 +1,6 @@
 open Messages
 open Utils
 
-let gen_letters _id = ['a';'b'; Char.chr @@ Random.int (255)]
-
-
-let strip_letterpool date {period;letters} =
-  {period ;
-   letters = List.filter (fun (d,_) -> d>= date) letters}
-
-let strip_wordpool date {period;words} =
-  {period ;
-   words = List.filter (fun (d,_) -> d>= date) words}
-
 let broadcast ?except braodcastpool msg =
   Pool.iter_p braodcastpool (fun (point,(conn:Netpool.conn)) ->
       if unopt_map ~default:true (fun p -> point != p) except then
@@ -20,31 +9,34 @@ let broadcast ?except braodcastpool msg =
         Lwt.return_unit
     )
 
-let check_letter pool ({ letter; head; author; signature } as l) =
+let check_letter ({ letter; period ; head; author; signature } as l) =
   let open Crypto in
   let msg =
     hash_to_bigstring @@
     hash_list
-    [ Utils.bigstring_of_char letter ;
+      [ Utils.bigstring_of_char letter ;
+        bigstring_of_int period ;
      hash_to_bigstring head;
      pk_to_bigstring author] in
   if verify ~pk:author ~msg ~signature then
-       (* if well signed, check if not already injected  *)
-    Messages.find_by_author
-      pool.Netpool.letterpoolos
-      ~period:((=)pool.current_period)
-      author |> is_nil
+    true
   else begin
     Log.log_warn "Signature check failed for %a@." pp_letter l;
     false end
 
 
+let log_unexpected_message msg =
+  Log.log_warn "@[<v 2>Unexpected msg %a.@]@.Igonoring it.@."
+    Messages.pp_message
+    msg;
+  Lwt.return_unit
 
 
 
-let answer (st : Netpool.worker_state) (msg :
-                                          (Messages.message,string)
-                                            result ) =
+let answer
+      ~turn_by_turn
+      (st : Netpool.worker_state)
+      (msg : (Messages.message,string)  result ) =
   match msg with
   | Error s -> Log.log_error "Error decoding input message: %s" s;
                Messages.send
@@ -54,58 +46,74 @@ let answer (st : Netpool.worker_state) (msg :
   Log.log_info "Processing messages @[%a@]@." Messages.pp_message msg;
   match msg with
   | Register id ->
-     let lettres = gen_letters id in
+     let lettres = Mempool.gen_letters id in
      Messages.send
        (Messages.Letters_bag lettres)
        st.fd
   | Listen ->
-     Pool.add st.pool.broadcastpoolos st.point {point=st.point ; fd=st.fd}
+     Pool.add st.netpoolos.broadcastpoolos st.point {point=st.point ; fd=st.fd}
   | Stop_listen ->
-     Pool.remove st.pool.broadcastpoolos st.point;
+     Pool.remove st.netpoolos.broadcastpoolos st.point;
      Lwt.return_unit
   | Get_full_letterpool ->
      Messages.send
-       (Messages.Full_letterpool st.pool.letterpoolos)
+       (Messages.Full_letterpool (Mempool.letterpool st.mempoolos))
        st.fd
 
   | Get_full_wordpool ->
      Messages.send
-       (Messages.Full_wordpool st.pool.wordpoolos)
+       (Messages.Full_wordpool  (Mempool.wordpool  st.mempoolos))
        st.fd
 
   | Get_letterpool_since date ->
      Messages.send
        (Messages.Diff_letterpool
           {since = date ;
-           letterpool = strip_letterpool date st.pool.letterpoolos } )
+           letterpool = Mempool.letterpool_since st.mempoolos date } )
        st.fd
 
   | Get_wordpool_since date ->
      Messages.send
        (Messages.Diff_wordpool
           {since = date ;
-           wordpool = strip_wordpool date st.pool.wordpoolos } )
+           wordpool = Mempool.wordpool_since st.mempoolos date } )
        st.fd
 
   | Inject_letter l ->
-     if check_letter st.pool l then begin
-       add_letter st.pool.letterpoolos
-         st.pool.current_period
-         l;
-       broadcast ~except:st.point st.pool.broadcastpoolos msg
-     end else begin
-       Log.log_warn "Injection failed for letter %a" pp_letter l;
-       Lwt.return_unit
+     if check_letter l then begin
+         let next_turn, injected =  Mempool.inject_letter
+                                      ~turn_by_turn
+                                      st.mempoolos
+                                      l in
+         let%lwt _bcst_msg = if injected then 
+                              broadcast ~except:st.point st.netpoolos.broadcastpoolos msg
+                            else Lwt.return_unit in
+         match next_turn with
+             Some p when turn_by_turn ->
+                broadcast st.netpoolos.poolos
+                  (Messages.Next_turn  p)
+             | _ -> Lwt.return_unit
+       end else begin
+         Log.log_warn "Injection failed for letter %a" pp_letter l;
+         Lwt.return_unit
        end
   | Inject_word w ->
-     add_word st.pool.wordpoolos
-       st.pool.current_period
-       w;
-     broadcast ~except:st.point st.pool.broadcastpoolos msg
+     let next_turn, _injected =  Mempool.inject_word
+                                  ~turn_by_turn
+                                  st.mempoolos
+                                  w in 
+     let%lwt _bcst_msg =
+       broadcast ~except:st.point st.netpoolos.broadcastpoolos msg in
+     begin match next_turn with
+       Some p when turn_by_turn ->
+        broadcast st.netpoolos.poolos
+          (Messages.Next_turn  p)
+     | _ -> Lwt.return_unit  end
   | Inject_raw_op _ ->
-     broadcast ~except:st.point st.pool.broadcastpoolos msg
-  | Letters_bag _ -> (assert false)
-  | Full_letterpool _ -> (assert false)
-  | Diff_letterpool _ -> (assert false)
-  | Full_wordpool _ -> (assert false)
-  | Diff_wordpool _ -> (assert false)
+     broadcast ~except:st.point st.netpoolos.broadcastpoolos msg
+  | Letters_bag _ -> log_unexpected_message msg
+  | Next_turn _ -> log_unexpected_message msg
+  | Full_letterpool _ -> log_unexpected_message msg
+  | Diff_letterpool _ -> log_unexpected_message msg
+  | Full_wordpool _ -> log_unexpected_message msg
+  | Diff_wordpool _ -> log_unexpected_message msg

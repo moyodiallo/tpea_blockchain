@@ -22,10 +22,10 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-
 type t = {
   socket: Lwt_unix.file_descr ;
-  netpool: Netpool.pool
+  netpoolos: Netpool.pool;
+  mempoolos: Mempool.mempool
   }
 
 let rec worker_loop st =
@@ -34,7 +34,13 @@ let rec worker_loop st =
   match addr with
   | Lwt_unix.ADDR_UNIX _ -> assert false
   | Lwt_unix.ADDR_INET (addr, port) ->
-     Lwt.async (fun () -> Netpool.accept ~callback:Answerer.answer st.netpool fd (addr, port)) ;
+     Lwt.async (fun () ->
+         Netpool.accept
+           ~callback:(Answerer.answer ~turn_by_turn:true)
+           st.netpoolos
+           st.mempoolos
+           fd
+           (addr, port)) ;
      worker_loop st
 
 let create_listening_socket ~backlog ?(addr = Unix.inet6_addr_any) port =
@@ -46,11 +52,11 @@ let create_listening_socket ~backlog ?(addr = Unix.inet6_addr_any) port =
   Lwt_unix.listen main_socket backlog ;
   Lwt.return main_socket
 
-let create ?addr ~backlog netpool port =
+let create ?addr ~backlog ~netpoolos ~mempoolos port =
   Lwt.catch begin fun () ->
     let%lwt socket =
       create_listening_socket ~backlog ?addr port in
-    let st = { socket ; netpool } in
+    let st = { socket ; netpoolos;mempoolos } in
     Lwt.return st
     end begin fun exn ->
     Log.log_error

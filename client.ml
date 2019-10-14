@@ -105,7 +105,7 @@ let test ?(hard=false) () =
   let%lwt () = receive ~check:(check_get_full_wordpool ~hard get_full_wordpool) () in
 
   let bag = Author.{author = pk ; sk; content=['a';'b']} in
-  let letter = Author.make_letter_on_hash bag 'a' Author.genesis in
+  let letter = Author.make_letter_on_hash bag 0 Author.genesis 'a' in
   let message = Messages.Inject_letter letter in
   let%lwt () = send_some message in
   let getpool = Messages.Get_letterpool_since 0 in
