@@ -21,62 +21,73 @@ let receive ?check () =
             | Some t -> let%lwt t = t in
                         begin match t with
                         | Ok msg ->
-                           Option.iter (fun f -> f  msg) check;
                            Log.log_info "Received %a@."
-                             Messages.pp_message msg
+                             Messages.pp_message msg;
+                           Utils.unopt_map
+                             ~default:Lwt.return_unit
+                             (fun f -> f  msg)
+                             check 
                         | Error s ->
-                           Log.log_error "Reception error %s@." s
-                        end; Lwt.return_unit
+                           (Log.log_error "Reception error %s@." s;
+                            Lwt.return_unit)
+                        end
 
 
 exception Test_failure of (string*string)
 
-let checker ~hard test sent received =
-  if test (sent, received) then
-    Log.log_success
-      "message %a after %a@."
-      Messages.pp_message received
-      Messages.pp_message sent
+let rec checker ~hard ?(ignore_msgs=fun _ -> false) test sent received =
+  if ignore_msgs received then
+    receive ~check:(checker ~hard ~ignore_msgs test sent) ()
   else begin
-      Log.log_error
-        "message %a after %a@."
-        Messages.pp_message received
-        Messages.pp_message sent;
-      if hard then
-        raise @@ Test_failure
-          (Messages.show_message sent ,
-           Messages.show_message received)
+      if test (sent, received) then
+        Log.log_success
+          "message %a after %a@."
+          Messages.pp_message received
+          Messages.pp_message sent
+      else begin
+          Log.log_error
+            "message %a after %a@."
+            Messages.pp_message received
+            Messages.pp_message sent;
+          if hard then
+            raise @@ Test_failure
+                       (Messages.show_message sent ,
+                        Messages.show_message received)
+        end;
+      Lwt.return_unit
     end
 
+let ignore_msgs = function Messages.Next_turn _ -> true |_-> false
+  
 let check_register ~hard =
-  checker ~hard
+  checker ~hard ~ignore_msgs
     (function (Register _ ,Letters_bag _) -> true
             | _ -> false)
 let check_get_full_letterpool ~hard =
-  checker ~hard
+  checker ~hard ~ignore_msgs
     (function (Get_full_letterpool ,Full_letterpool _) -> true
             | _ -> false)
 let check_get_letterpool_since ~hard =
-  checker ~hard
+  checker ~hard ~ignore_msgs
     (function (Get_letterpool_since d ,Diff_letterpool {since;_} ) when d=since -> true
             | _ -> false)
 
 let check_get_full_wordpool ~hard =
-  checker ~hard
+  checker ~hard ~ignore_msgs
     (function (Get_full_wordpool ,Full_wordpool _) -> true
             | _ -> false)
 let check_get_wordpool_since ~hard =
-  checker ~hard
+  checker ~hard ~ignore_msgs
     (function (Get_wordpool_since d ,Diff_wordpool {since;_} ) when d=since -> true
             | _ -> false)
 
 let check_inject_letter ~hard =
-  checker ~hard
+  checker ~hard ~ignore_msgs
     (function (Inject_letter l ,Diff_letterpool {letterpool;_})
               when List.exists (fun (_,l1) -> l=l1) letterpool.letters -> true
             | _ -> false)
 let check_inject_word ~hard =
-  checker ~hard
+  checker ~hard ~ignore_msgs
     (function (Inject_word w ,Diff_wordpool {wordpool;_})
               when List.exists (fun (_,w1) -> w=w1) wordpool.words -> true
             | _ -> false)
@@ -112,3 +123,9 @@ let test ?(hard=false) () =
   let%lwt () = send_some getpool in
   let%lwt () = receive ~check:(check_inject_letter ~hard message) () in
 Lwt.return_unit
+
+let _ =
+  let main = let %lwt _ = connect () in
+             test ~hard:true ()
+  in
+  Lwt_main.run main

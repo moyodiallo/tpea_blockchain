@@ -3,7 +3,7 @@ open Messages
 let json_pp ppf msg_yo =
   Yojson.Safe.pretty_print ~std:false ppf (message_to_yojson msg_yo)
 
-let _ =
+let test () =
   Lwt_main.run begin
       let (pk,_sk) =  Crypto.genkeys () in
 

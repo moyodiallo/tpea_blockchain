@@ -105,11 +105,15 @@ let _ =
                       This option has no effect if the turn-by-turn mechanism is not activated.")
                    ] in
   let doc =  "Usage: server [options]" in
-  Arg.parse parse_list (fun _doc -> failwith "Unexpected argument") doc;
-  serve
-    ?addr:!addr_ref
-    ~turn_by_turn:(not !no_turn_ref)
-    ?timeout:!timeout_ref
-    ()
+  Arg.parse parse_list (fun _doc -> failwith "Unexpected argument")
+    doc;
+  let serve =
+    serve
+      ?addr:!addr_ref
+      ~turn_by_turn:(not !no_turn_ref)
+      ?timeout:!timeout_ref
+      () in
+  Lwt_main.run serve
+      
    
     

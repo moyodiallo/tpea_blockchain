@@ -28,9 +28,10 @@ let log_color col tag format =
 
 
 let log_color_line ?(attr="1") col tag format =
-  let print =
+  let print s =
     Format.printf "\027[%s;3%sm[%s]%s\027[m"
-      attr col tag
+      attr col tag s;
+    flush_all()
   in
     Format.kasprintf print format
 
