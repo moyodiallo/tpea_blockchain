@@ -141,55 +141,24 @@ let message_of_yojson msg =
   ||? ([%of_yojson: inject_raw_op_msg] >|> inject_raw_op_to_message)
   |>snd
 
-let size_of_length = 8
-
-exception Writing_failure
-
-let write_channel ch buf ofs length =
-  let%lwt written = Lwt_unix.write ch buf ofs length
-  in if written < length then
-       raise Writing_failure
-     else
-       Lwt.return_unit
-
 
 let send ?(verbose=true)  msg out_ch =
   let () = if verbose then Log.log_info "Sending message %a@." pp_message msg in
   let str = message_to_yojson msg |> Yojson.Safe.to_string |> Bytes.unsafe_of_string in
   let len = Bytes.length str in
-  let to_write_size = Utils.bytes_of_int len in
-  let%lwt () = write_channel out_ch to_write_size 0 size_of_length in
-  write_channel out_ch str 0 len
+  let%lwt () =  Utils.write_int out_ch len in
+  Utils.write_channel out_ch str 0 len
 
-let rcv_size = Bytes.create size_of_length
-
-
-exception Reading_failure
-let read_channel ch buf offs len =
-  let%lwt read_len = Lwt_unix.read ch buf offs len in
-  if read_len < len then
-    let _ = Log.log_error "Reading failed:  read %i instead of %i
-                           chars : @ %a@."
-              read_len
-              len
-              Hex.pp (Hex.of_bytes buf)
-    in
-    raise Reading_failure
-  else Lwt.return buf
 
 
 let receive ?(verbose=true) in_ch  : (message, string) result Lwt.t=
   let%lwt () = if verbose then Log.log_info "receiving Message.@."; Lwt.return_unit in
-  let%lwt rcv_size = read_channel in_ch rcv_size 0 size_of_length in
   let%lwt () =  if verbose then Log.log_info "reading size.@."; Lwt.return_unit in
-  let len = Int64.to_int @@ Bytes.get_int64_le rcv_size 0 in
+  let%lwt len = Utils.read_int in_ch  in
   let _ =  if verbose then Log.log_info "Reading %i chars@." len in
   let buf = Bytes.create len in
-  let%lwt read = Lwt_unix.read in_ch buf 0 len in
-  if read < len then
-    raise Reading_failure
-  else
-    let _ =  if verbose then Log.log_info "All data read, processing %i chars@." len in
+  let%lwt _  =  Utils.read_channel in_ch buf 0 len in
+  let _ =  if verbose then Log.log_info "All data read, processing %i chars@." len in
     Yojson.Safe.from_string (Bytes.to_string buf)
        |> message_of_yojson
        |> Lwt.return

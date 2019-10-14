@@ -16,8 +16,8 @@ let check_letter ({ letter; period ; head; author; signature } as l) =
     hash_list
       [ Utils.bigstring_of_char letter ;
         bigstring_of_int period ;
-     hash_to_bigstring head;
-     pk_to_bigstring author] in
+        hash_to_bigstring head;
+        pk_to_bigstring author] in
   if verify ~pk:author ~msg ~signature then
     true
   else begin

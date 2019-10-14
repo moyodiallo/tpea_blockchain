@@ -4,13 +4,15 @@ let json_pp ppf msg_yo =
   Yojson.Safe.pretty_print ~std:false ppf (message_to_yojson msg_yo)
 
 let serve () =
-      let netpoolos = Netpool.create () in
-      let mempoolos = Mempool.create () in
-      let%lwt server = Server.create
-                         (* ~addr:(Unix.inet_addr_of_string "127.0.0.1") *)
-                         ~backlog:100 ~netpoolos ~mempoolos 12345 in
-      Server.activate server;
-      Lwt.wait() |> fst
+  Log.log_info "Creating pools and server@." ;
+  let netpoolos = Netpool.create () in
+  let mempoolos = Mempool.create () in
+  let%lwt server = Server.create
+                     (* ~addr:(Unix.inet_addr_of_string "127.0.0.1") *)
+                     ~backlog:100 ~netpoolos ~mempoolos 12345 in
+  Log.log_info "Activating server@." ;
+  let%lwt _ = Server.activate server in
+  Lwt.return_unit
 
 let _ =
   Lwt_main.run begin

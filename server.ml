@@ -60,24 +60,22 @@ let create ?addr ~backlog ~netpoolos ~mempoolos port =
     Lwt.return st
     end begin fun exn ->
     Log.log_error
-    "@[<v 2>Cannot accept incoming connections@ %s@ address %s:%a@.@]"
-    (Printexc.to_string exn)
-    (Unix.string_of_inet_addr (Option.value addr ~default:Unix.inet_addr_any))
-    Format.pp_print_int port
-    ;
+      "@[<v 2>Cannot accept incoming connections@ %s@ address %s:%a@.@]"
+      (Printexc.to_string exn)
+      (Unix.string_of_inet_addr (Option.value addr ~default:Unix.inet6_addr_any))
+      Format.pp_print_int port ;
     Lwt.fail exn
 
     end
 
 let activate st =
-  Lwt.async (fun () ->
-      Lwt.catch (fun () ->
-          Log.log_info "Server's welcome loop started@.";
-          let%lwt _wroker = worker_loop st in
-          Log.log_info "Server's welcome loop stopped@.";
-          Lwt.return_unit
-        )
-        ( fun _ ->
-          Log.log_info "Server's welcome loop stopped@.";
-          Lwt_unix.close st.socket)
+  Lwt.catch (fun () ->
+      Log.log_info "Server's welcome loop started@.";
+      let%lwt _worker = worker_loop st in
+      Log.log_info "Server's welcome loop stopped@.";
+      Lwt.return_unit
     )
+    ( fun _ ->
+      Log.log_info "Server's welcome loop stopped@.";
+      Lwt_unix.close st.socket)
+

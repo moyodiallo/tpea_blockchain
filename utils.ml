@@ -47,13 +47,59 @@ let bytes_of_int i =
   Bytes.set_int64_be ibuf 0 (Int64.of_int i);
   ibuf
 
+let bytes_to_int ibuf =
+  Bytes.get_int64_be ibuf 0 |>
+    Int64.to_int
+  
 let bigstring_of_int i =
   let bs = Bigstring.create 8 
   in Bigstring.fill bs '\000';
      let ibuf = bytes_of_int i in
      Bigstring.blit_of_bytes ibuf 0 bs 0 8 ;
      bs
-     
+
+let bigstring_to_int bs =
+  let ibuf = Bytes.create 8 
+  in Bigstring.blit_to_bytes bs 0 ibuf 0 8 ;
+     bytes_to_int ibuf
+
+
+exception Reading_failure
+
+let read_channel ch buf offs len =
+  let%lwt read_len = Lwt_unix.read ch buf offs len in
+  if read_len < len then
+    let _ = Log.log_error "Reading failed:  read %i instead of %i
+                           chars : @ %a@."
+              read_len
+              len
+              Hex.pp (Hex.of_bytes buf)
+    in
+    raise Reading_failure
+  else Lwt.return buf
+
+let size_of_int = 8
+
+  
+let read_int in_ch =
+  let ibuf = Bytes.create 8 in
+  let%lwt rcv_size = read_channel in_ch ibuf 0 size_of_int in
+  Lwt.return @@ bytes_to_int rcv_size
+
+exception Writing_failure
+
+let write_channel ch buf ofs length =
+  let%lwt written = Lwt_unix.write ch buf ofs length
+  in if written < length then
+       raise Writing_failure
+     else
+       Lwt.return_unit
+
+let write_int out_ch i =
+  let ibuf = bytes_of_int i in
+  write_channel out_ch ibuf 0 size_of_int
+
+
 let included small large =
   List.fold_left
     (fun i s -> if i then List.mem s large else i)
