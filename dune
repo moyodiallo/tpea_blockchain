@@ -1,6 +1,6 @@
 (executables
- (names server client)
- (public_names scrabblos-server scrabblos-client)
+ (names main_server client printing_proxy)
+ (public_names scrabblos-server scrabblos-client scrabblos-proxy)
  (libraries
         yojson
         ppx_deriving_yojson.runtime
