@@ -5,7 +5,8 @@ type internal_letterpool = Messages.letterpool
 type internal_wordpool =  Messages.wordpool
 
 type mempool =
-  {
+  { turn_by_turn : bool ;
+    timeout : float option ;
     mutable registered : Messages.author_id list ;
     letterpoolos : internal_letterpool ;
     wordpoolos : internal_wordpool ;
@@ -60,23 +61,28 @@ let wordpool pool = pool.wordpoolos
 
 (** {1} Mempool  *)
 
-let create () =
+let create ~turn_by_turn ?timeout () =
   let period = 0
   and current_period_start = Unix.time ()
   in
-  {registered =[];
-   letterpoolos =  init_letterpool;
-   wordpoolos = init_wordpool;
-   current_period = period ;
-   current_period_start}
+  { turn_by_turn ;
+    timeout ;
+    registered =[];
+    letterpoolos =  init_letterpool;
+    wordpoolos = init_wordpool;
+    current_period = period ;
+    current_period_start
+  }
 
+let turn_by_turn {turn_by_turn ; _} = turn_by_turn
+                                    
 let gen_letters _id = ['a';'b'; Char.chr @@ Random.int (255)]
 
 let register pool id = pool.registered <-
                          id::(Utils.remove_first pool.registered id)
 
-let next_period ~turn_by_turn pool =
-  if not turn_by_turn then Some 0 else
+let next_period pool =
+  if not pool.turn_by_turn then Some 0 else
     let injecters =
       List.filter (fun (p,_) -> p = pool.current_period)
         pool.letterpoolos.letters |>
@@ -84,7 +90,12 @@ let next_period ~turn_by_turn pool =
 
     in
     if Utils.included  pool.registered injecters
-       || Unix.time () > pool.current_period_start +. 10.
+       || (Utils.unopt_map
+             (fun tio -> Unix.time () > pool.current_period_start
+                                        +. tio)
+             ~default:false
+             pool.timeout
+          )
     then begin
         pool.current_period <- pool.current_period + 1 ;
         let current_period = period_of_int pool.current_period
@@ -99,14 +110,12 @@ let next_period ~turn_by_turn pool =
     else None
 
 let inject_letter
-      ?(turn_by_turn=true)
       (pool:mempool)
       ({  period;_ } as l:letter) =
-  let period_change = next_period ~turn_by_turn pool in
+  let period_change = next_period pool in
   if
-    not turn_by_turn
+    not pool.turn_by_turn
     || period = pool.letterpoolos.current_period
-    || period = pool.letterpoolos.next_period
   then begin
       add_letter pool l;
       (period_change, true)
@@ -120,8 +129,7 @@ let inject_letter
       (period_change,false) end
 
 let inject_word
-      ?(turn_by_turn=true)
       (pool:mempool)
       (w:word) =
-  let period_change = next_period ~turn_by_turn pool in
+  let period_change = next_period pool in
   (period_change, add_word pool w)

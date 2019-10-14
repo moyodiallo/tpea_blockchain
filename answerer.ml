@@ -34,7 +34,6 @@ let log_unexpected_message msg =
 
 
 let answer
-      ~turn_by_turn
       (st : Netpool.worker_state)
       (msg : (Messages.message,string)  result ) =
   match msg with
@@ -82,14 +81,13 @@ let answer
   | Inject_letter l ->
      if check_letter l then begin
          let next_turn, injected =  Mempool.inject_letter
-                                      ~turn_by_turn
                                       st.mempoolos
                                       l in
          let%lwt _bcst_msg = if injected then 
                               broadcast ~except:st.point st.netpoolos.broadcastpoolos msg
                             else Lwt.return_unit in
          match next_turn with
-             Some p when turn_by_turn ->
+             Some p when Mempool.turn_by_turn st.mempoolos ->
                 broadcast st.netpoolos.poolos
                   (Messages.Next_turn  p)
              | _ -> Lwt.return_unit
@@ -99,13 +97,12 @@ let answer
        end
   | Inject_word w ->
      let next_turn, _injected =  Mempool.inject_word
-                                  ~turn_by_turn
                                   st.mempoolos
                                   w in 
      let%lwt _bcst_msg =
        broadcast ~except:st.point st.netpoolos.broadcastpoolos msg in
      begin match next_turn with
-       Some p when turn_by_turn ->
+       Some p when Mempool.turn_by_turn st.mempoolos ->
         broadcast st.netpoolos.poolos
           (Messages.Next_turn  p)
      | _ -> Lwt.return_unit  end
