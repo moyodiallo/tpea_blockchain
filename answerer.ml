@@ -24,6 +24,22 @@ let check_letter ({ letter; period ; head; author; signature } as l) =
     Log.log_warn "Signature check failed for %a@." pp_letter l;
     false end
 
+  
+let check_word ({ word; head; politician; signature } as w :word) =
+  let open Crypto in
+  let head_bs = hash_to_bigstring head
+  and politician_bs = pk_to_bigstring politician
+  and word_bs = List.map letter_to_bigstring word in
+  let msg =
+    hash_to_bigstring @@
+      hash_list @@
+        word_bs @ [head_bs; politician_bs ] in
+  if verify ~pk:politician ~msg ~signature then
+    true
+  else begin
+    Log.log_warn "Signature check failed for %a@." pp_word w;
+    false end
+
 
 let log_unexpected_message msg =
   Log.log_warn "@[<v 2>Unexpected msg %a.@]@.Igonoring it.@."
