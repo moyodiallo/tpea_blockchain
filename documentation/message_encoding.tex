@@ -67,9 +67,19 @@ sous-optimal. Le but est de rendre les messages facile à analyser.
   { "register" : public_key }
 \end{jsonMessage}
 Un auteur enregistré sera attendu avant de passer au tour suivant. Le
-serveur répond à ce message par un sac de lettres.
+serveur répond à ce message par un sac de lettres. La public key aura
+été préalablement générée à l'aide du système de signature
+\texttt{ed25519}. Vous pourrez, pour cela utiliser une fonction de
+génération de clefs publiques et privées d'une bibliothèque adaptée à
+votre language, comme par exemple la bibliothèqe \texttt{Hacl} pour
+OCaml.
 
 \subsubsection{Écoute continue des messages}
+
+A l'aide des deux messages suivants, un client pourra se mettre dans
+un mode d'écoute continue pour éviter d'avoir demander régulièrement
+au serveur son état.
+
 \label{sec:ecoute-continue}
 \begin{jsonMessage}
   { "listen" : null }
@@ -96,7 +106,7 @@ précédente, on pourra utiliser
 \end{jsonMessage}
 \subsubsection{Bassins de mots}
 \label{sec:bassins-de-lettre}
-De même que pour les lettres, on pourras obtenir les mots injectés par
+De même que pour les lettres, on pourra obtenir les mots injectés par
 le message :
 \begin{jsonMessage}
   { "get_full_wordpool": null}
@@ -144,6 +154,11 @@ envoyant un message :
 \begin{jsonMessage}
   { "next_turn" : i }
 \end{jsonMessage}
+Ce message pourra être reçu en cas d'écoute continue mais aussi en
+réponse à un message. Dans ce cas, le serveur enverra deux messages
+succéssivement, le premier annonçant le passage au tour suivant, suivi
+de la réponse "normale" au message envoyé par le client.
+
 
 \subsubsection{Bassin de lettres et de mots}
 \label{sec:bassin-de-lettres}
@@ -183,7 +198,13 @@ De même pour une demande de bassins partiels, il enverra :
 
  Tous les messages sont des chaines de caractères au format json,
  préfixées par la taille de la châine, encodée dans un entier 64 bits
- big endian :
+ \textbf{big endian}.
+
+ \textcolor{red}{Attention}, la plupart des systèmes actuels
+ utilisent la représentation little endian. Il faudra donc bien penser
+ à s'assurer de l'endianness des entiers utilisés dans vos messages
+ via l'utilisation de fonction dédiées et non pas en utilisant des
+ entiers 64 bits natif à votre système.
 
  \includegraphics{images/encodage_message.png}
 
@@ -200,7 +221,7 @@ De même pour une demande de bassins partiels, il enverra :
  \label{sec:enc-nombres}
 
  Les nombres (entier, float) sont donnés par leur représentation
- décimale textuelle.  Par exemple, un champ \texttt{periode} contenant
+ décimale textuelle. Par exemple, un champ \texttt{periode} contenant
  la valeur 128 sera encodé par la chaîne \texttt{"period" : 128}.
 
  \subsubsection{Lettres}
