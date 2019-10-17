@@ -16,6 +16,8 @@ type letter =
   }
     [@@deriving yojson,show]
 
+val  letter_to_bigstring : letter -> Bigstring.t
+  
 type word = {
     word : letter list ;
     head : hash ;

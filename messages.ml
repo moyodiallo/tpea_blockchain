@@ -161,4 +161,18 @@ let receive ?(verbose=true) in_ch  : (message, string) result Lwt.t=
   let _ =  if verbose then Log.log_info "All data read, processing %i chars@." len in
     Yojson.Safe.from_string (Bytes.to_string buf)
        |> message_of_yojson
-       |> Lwt.return
+    |> Lwt.return
+  
+
+let letter_to_bigstring { letter; period; head; author; signature } =
+  let open Utils in
+  let open Crypto in
+  let buf =
+    Bigstring.concat ""
+    [ bigstring_of_char letter ;
+      bigstring_of_int period ;
+      hash_to_bigstring head ;
+      pk_to_bigstring author ;
+      signature_to_bigstring signature ] in
+  buf
+      
