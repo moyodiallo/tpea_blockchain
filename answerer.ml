@@ -61,7 +61,7 @@ let answer
   Log.log_info "Processing messages @[%a@]@." Messages.pp_message msg;
   match msg with
   | Register id ->
-     let lettres = Mempool.gen_letters id in
+     let lettres = Mempool.gen_letters st.mempoolos id in
      Messages.send
        (Messages.Letters_bag lettres)
        st.fd

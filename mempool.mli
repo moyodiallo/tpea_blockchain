@@ -2,11 +2,11 @@ open Messages
    
 type mempool
 
-val create : turn_by_turn:bool -> ?timeout:float -> unit -> mempool
+val create : turn_by_turn:bool -> ?nb_rounds:int -> ?timeout:float -> unit -> mempool
 
 val turn_by_turn : mempool -> bool
   
-val gen_letters : politician_id -> char list
+val gen_letters : mempool -> politician_id -> char list
 val register : mempool -> politician_id -> unit
 
 val letterpool : mempool -> letterpool

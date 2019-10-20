@@ -6,6 +6,7 @@ type internal_wordpool =  Messages.wordpool
 
 type mempool =
   { turn_by_turn : bool ;
+    nb_rounds : int ;
     timeout : float option ;
     mutable registered : Messages.author_id list ;
     letterpoolos : internal_letterpool ;
@@ -61,11 +62,12 @@ let wordpool pool = pool.wordpoolos
 
 (** {1} Mempool  *)
 
-let create ~turn_by_turn ?timeout () =
+let create ~turn_by_turn ?(nb_rounds=100) ?timeout () =
   let period = 0
   and current_period_start = Unix.time ()
   in
   { turn_by_turn ;
+    nb_rounds ;
     timeout ;
     registered =[];
     letterpoolos =  init_letterpool;
@@ -76,7 +78,12 @@ let create ~turn_by_turn ?timeout () =
 
 let turn_by_turn {turn_by_turn ; _} = turn_by_turn
                                     
-let gen_letters _id = ['a';'b'; Char.chr @@ Random.int (255)]
+let gen_letters mempool _id =
+  let rec aux round res =
+    if round >0 then
+      aux (round - 1)  ((Char.chr @@ Random.int 255) ::res)
+    else res
+  in aux mempool.nb_rounds []
 
 let register pool id = pool.registered <-
                          id::(Utils.remove_first pool.registered id)
