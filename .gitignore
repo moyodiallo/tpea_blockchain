@@ -1,0 +1,7 @@
+.merlin
+dune-project
+*.install
+/_build
+scrabblos-client
+scrabblos-proxy
+scrabblos-server
