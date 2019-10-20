@@ -67,17 +67,19 @@ sous-optimal. Le but est de rendre les messages facile à analyser.
   { "register" : public_key }
 \end{jsonMessage}
 Un auteur enregistré sera attendu avant de passer au tour suivant. Le
-serveur répond à ce message par un sac de lettres. La public key aura
+serveur répond à ce message par un sac de lettres.
+
+La public key aura
 été préalablement générée à l'aide du système de signature
 \texttt{ed25519}. Vous pourrez, pour cela utiliser une fonction de
 génération de clefs publiques et privées d'une bibliothèque adaptée à
-votre language, comme par exemple la bibliothèqe \texttt{Hacl} pour
+votre language, comme par exemple la bibliothèque \texttt{Hacl} pour
 OCaml.
 
 \subsubsection{Écoute continue des messages}
 
 A l'aide des deux messages suivants, un client pourra se mettre dans
-un mode d'écoute continue pour éviter d'avoir demander régulièrement
+un mode d'écoute continue pour éviter d'avoir à demander régulièrement
 au serveur son état.
 
 \label{sec:ecoute-continue}
@@ -154,15 +156,14 @@ envoyant un message :
 \begin{jsonMessage}
   { "next_turn" : i }
 \end{jsonMessage}
-Ce message pourra être reçu en cas d'écoute continue mais aussi en
-réponse à un message. Dans ce cas, le serveur enverra deux messages
-succéssivement, le premier annonçant le passage au tour suivant, suivi
-de la réponse "normale" au message envoyé par le client.
+
+Ce message pourra donc être reçu à n'importe quel moment, y compris
+lorsque le client attend la réponse à un autre message.
 
 
 \subsubsection{Bassin de lettres et de mots}
 \label{sec:bassin-de-lettres}
-En réponse aux demandes de bassin lettres et respectivement de mots
+En réponse aux demandes de bassin de lettres et respectivement de mots
 depuis le début de la partie, le serveur enverra
 \begin{jsonMessage}
   { "full_letterpool" : letterpool }
@@ -183,9 +184,9 @@ De même pour une demande de bassins partiels, il enverra :
 
  \subsubsection{Retransmission d'opérations}
  \label{sec:forward}
- Lorsqu'un client c'est mis en écoute, le serveur lui envoie les
- message d'injection de lettre, de mot et d'opération brute qu'il
- recevra.
+ Lorsqu'un client s'est mis en écoute, le serveur lui transmet tous
+ les messages d'injection de lettre, de mot et d'opération brute qu'il
+ reçoit.
 
  les lettre, mot et opération injectés ne sont pas retransmis à leur
  émetteur.
@@ -196,7 +197,7 @@ De même pour une demande de bassins partiels, il enverra :
  \subsubsection{Structure des messages}
  \label{sec:struct-des-mess}
 
- Tous les messages sont des chaines de caractères au format json,
+ Tous les messages sont des chaînes de caractères au format json,
  préfixées par la taille de la châine, encodée dans un entier 64 bits
  \textbf{big endian}.
 
