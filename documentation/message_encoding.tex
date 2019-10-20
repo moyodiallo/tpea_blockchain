@@ -57,6 +57,12 @@
 L'encodage des messages est relativement simple et extrêmement
 sous-optimal. Le but est de rendre les messages facile à analyser.
 
+Le serveur est conçu pour utiliser une connexion continue avec le
+client, si la connexion TCP est coupée, les messages en attente ne
+sont pas renvoyés, ils sont perdus.
+
+L'auteur n'aura pas à réitérer le message d'enregistrement.
+
 \subsection{Messages à destination du serveur}
 \label{sec:mess-vers-serv}
 
