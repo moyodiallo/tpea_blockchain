@@ -79,10 +79,10 @@ let activate st =
       Log.log_info "Server's welcome loop stopped@.";
       Lwt_unix.close st.socket)
 
-let serve ?addr ~turn_by_turn ?timeout ~port () =
+let serve ?addr ~turn_by_turn ~nb_rounds ?timeout ~port () =
   Log.log_info "Creating pools and server@." ;
   let netpoolos = Netpool.create () in
-  let mempoolos = Mempool.create ~turn_by_turn ?timeout () in
+  let mempoolos = Mempool.create ~turn_by_turn ~nb_rounds ?timeout () in
   let%lwt server = create ?addr ~backlog:100 ~netpoolos ~mempoolos port in
   Log.log_info "Activating server@." ;
   let%lwt _ = activate server in

@@ -3,6 +3,7 @@ let _ =
   let addr_ref = ref None in
   let port_ref = ref 12345 in
   let no_turn_ref = ref true  in
+  let nb_rounds_ref = ref 200  in
   let timeout_ref = ref None in
   let parse_list = [("-bind",
                      Arg.String (fun s -> addr_ref := Some (Unix.inet_addr_of_string s)),
@@ -10,6 +11,9 @@ let _ =
                     ("-port",
                      Arg.Set_int port_ref,
                      ":Port to which the server should bind (default is any)") ;
+                    ("-nb-turns",
+                     Arg.Set_int nb_rounds_ref,
+                     ":Number of turns until the end of the game.") ;
                     ("-no-turn",
                      Arg.Set no_turn_ref,
                      ":Disable the turn-by-turn mechanism") ;
@@ -26,6 +30,7 @@ let _ =
       ?addr:!addr_ref
       ~port:!port_ref
       ~turn_by_turn:(not !no_turn_ref)
+      ~nb_rounds:!nb_rounds_ref
       ?timeout:!timeout_ref
       () in
   Lwt_main.run serve
