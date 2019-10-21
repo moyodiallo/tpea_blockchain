@@ -51,6 +51,8 @@ signature `ed25519`. Vous pourrez, pour cela utiliser une fonction de
 génération de clefs publiques et privées d'une bibliothèque adaptée à
 votre language, comme par exemple la bibliothèque `Hacl` pour OCaml.
 
+La vérification de la signature des messages peut être débrayée dans
+le serveur en passant l'option `-no-check-sigs`
 #### Écoute continue des messages
 
 A l'aide des deux messages suivants, un client pourra se mettre dans
