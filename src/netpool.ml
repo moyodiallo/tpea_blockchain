@@ -12,6 +12,7 @@ type pool =
 
 and worker_state = {
     netpoolos : pool ;
+    check_sigs : bool ;
     mempoolos :  Mempool.mempool;
     point : point ;
     fd : Lwt_unix.file_descr ;
@@ -47,7 +48,7 @@ let pp_point ppf (addr,port) =
     (Unix.string_of_inet_addr addr)
     port
 
-let accept (netpoolos:pool) mempoolos ~callback fd (addr,port) =
+let accept ~check_sigs (netpoolos:pool) mempoolos ~callback fd (addr,port) =
   let point = {addr;port} in
   let%lwt () =  Pool.add netpoolos.poolos point {point;fd} in
   Lwt.catch begin fun () ->
@@ -55,6 +56,7 @@ let accept (netpoolos:pool) mempoolos ~callback fd (addr,port) =
     pp_point (addr,port)
     ;
       worker_loop {
+          check_sigs;
           netpoolos;
           mempoolos ;
           point;

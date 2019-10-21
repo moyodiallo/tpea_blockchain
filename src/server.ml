@@ -28,7 +28,7 @@ type t = {
   mempoolos: Mempool.mempool
   }
 
-let rec worker_loop st =
+let rec worker_loop ~check_sigs st =
   let%lwt () = Lwt_unix.yield () in
   let%lwt(fd, addr) = Lwt_unix.accept st.socket in
   match addr with
@@ -36,12 +36,13 @@ let rec worker_loop st =
   | Lwt_unix.ADDR_INET (addr, port) ->
      Lwt.async (fun () ->
          Netpool.accept
+           ~check_sigs
            ~callback:Answerer.answer
            st.netpoolos
            st.mempoolos
            fd
            (addr, port)) ;
-     worker_loop st
+     worker_loop ~check_sigs st
 
 let create_listening_socket ~backlog ?(addr = Unix.inet6_addr_any) port =
   let main_socket = Lwt_unix.(socket PF_INET6 SOCK_STREAM 0) in
@@ -68,10 +69,10 @@ let create ?addr ~backlog ~netpoolos ~mempoolos port =
 
     end
 
-let activate st =
+let activate ~check_sigs st =
   Lwt.catch (fun () ->
       Log.log_info "Server's welcome loop started@.";
-      let%lwt _worker = worker_loop st in
+      let%lwt _worker = worker_loop ~check_sigs st in
       Log.log_info "Server's welcome loop stopped@.";
       Lwt.return_unit
     )
@@ -79,13 +80,13 @@ let activate st =
       Log.log_info "Server's welcome loop stopped@.";
       Lwt_unix.close st.socket)
 
-let serve ?addr ~turn_by_turn ~nb_rounds ?timeout ~port () =
+let serve ?addr ~check_sigs ~turn_by_turn ~nb_rounds ?timeout ~port () =
   Log.log_info "Creating pools and server@." ;
   let netpoolos = Netpool.create () in
   let mempoolos = Mempool.create ~turn_by_turn ~nb_rounds ?timeout () in
   let%lwt server = create ?addr ~backlog:100 ~netpoolos ~mempoolos port in
   Log.log_info "Activating server@." ;
-  let%lwt _ = activate server in
+  let%lwt _ = activate ~check_sigs server in
   Lwt.return_unit
       
    

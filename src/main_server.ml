@@ -2,6 +2,7 @@
 let _ =
   let addr_ref = ref None in
   let port_ref = ref 12345 in
+  let no_check_sigs_ref = ref false  in
   let no_turn_ref = ref true  in
   let nb_rounds_ref = ref 200  in
   let timeout_ref = ref None in
@@ -14,6 +15,9 @@ let _ =
                     ("-nb-turns",
                      Arg.Set_int nb_rounds_ref,
                      ":Number of turns until the end of the game.") ;
+                    ("-no-check-sigs",
+                     Arg.Set no_check_sigs_ref,
+                     ":Disable the signature verification") ;
                     ("-no-turn",
                      Arg.Set no_turn_ref,
                      ":Disable the turn-by-turn mechanism") ;
@@ -29,6 +33,7 @@ let _ =
     Server.serve
       ?addr:!addr_ref
       ~port:!port_ref
+      ~check_sigs:(not !no_check_sigs_ref)
       ~turn_by_turn:(not !no_turn_ref)
       ~nb_rounds:!nb_rounds_ref
       ?timeout:!timeout_ref

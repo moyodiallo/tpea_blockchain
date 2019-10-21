@@ -95,7 +95,7 @@ let answer
        st.fd
 
   | Inject_letter l ->
-     if check_letter l then begin
+     if (not st.check_sigs) || check_letter l then begin
          let next_turn, injected =  Mempool.inject_letter
                                       st.mempoolos
                                       l in
@@ -112,16 +112,21 @@ let answer
          Lwt.return_unit
        end
   | Inject_word w ->
-     let next_turn, _injected =  Mempool.inject_word
-                                  st.mempoolos
-                                  w in 
-     let%lwt _bcst_msg =
-       broadcast ~except:st.point st.netpoolos.broadcastpoolos msg in
-     begin match next_turn with
-       Some p when Mempool.turn_by_turn st.mempoolos ->
-        broadcast st.netpoolos.poolos
-          (Messages.Next_turn  p)
-     | _ -> Lwt.return_unit  end
+     if (not st.check_sigs) || check_word w then begin
+         let next_turn, _injected =  Mempool.inject_word
+                                       st.mempoolos
+                                       w in 
+         let%lwt _bcst_msg =
+           broadcast ~except:st.point st.netpoolos.broadcastpoolos msg in
+         begin match next_turn with
+           Some p when Mempool.turn_by_turn st.mempoolos ->
+            broadcast st.netpoolos.poolos
+              (Messages.Next_turn  p)
+         | _ -> Lwt.return_unit  end
+       end else begin
+         Log.log_warn "Injection failed for word %a" pp_word w;
+         Lwt.return_unit
+       end
   | Inject_raw_op _ ->
      broadcast ~except:st.point st.netpoolos.broadcastpoolos msg
   | Letters_bag _ -> log_unexpected_message msg
