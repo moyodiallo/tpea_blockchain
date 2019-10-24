@@ -79,9 +79,11 @@ let create ~turn_by_turn ?(nb_rounds=100) ?timeout () =
 let turn_by_turn {turn_by_turn ; _} = turn_by_turn
                                     
 let gen_letters mempool _id =
+  let code_z = 122 in
+  let code_a = 97 in
   let rec aux round res =
     if round >0 then
-      aux (round - 1)  ((Char.chr @@ Random.int 255) ::res)
+      aux (round - 1)  ((Char.chr @@ (Random.int (code_z-code_a))+code_a) ::res)
     else res
   in aux mempool.nb_rounds []
 
