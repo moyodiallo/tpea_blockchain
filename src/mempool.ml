@@ -91,14 +91,23 @@ let register pool id = pool.registered <-
                          id::(Utils.remove_first pool.registered id)
 
 let next_period pool =
-  if not pool.turn_by_turn then Some 0 else
+  if not pool.turn_by_turn then
+      Some 0
+  else
+    (* get author that have injected at this level *)
     let injecters =
       List.filter (fun (p,_) -> p = pool.current_period)
         pool.letterpoolos.letters |>
         List.map (fun (_,{ author; _ })-> author)
 
     in
-    if Utils.included  pool.registered injecters
+    Log.log_info "@[<v 2> Injecters at level %d: @[ %a@] Registered :@[ %a@] @]@."
+      pool.current_period 
+      (Format.pp_print_list Messages.pp_author_id)
+      injecters
+      (Format.pp_print_list Messages.pp_author_id)
+      pool.registered;
+    if Utils.included pool.registered injecters
        || (Utils.unopt_map
              (fun tio -> Unix.time () > pool.current_period_start
                                         +. tio)
@@ -121,21 +130,22 @@ let next_period pool =
 let inject_letter
       (pool:mempool)
       ({  period;_ } as l:letter) =
-  let period_change = next_period pool in
   if
     not pool.turn_by_turn
     || period = pool.letterpoolos.current_period
   then begin
       add_letter pool l;
+      let period_change = next_period pool in
       (period_change, true)
-    end else begin
+    end
+  else begin
       let open Messages in
       Log.log_warn
         "Out of timeframe letter %a (current: %a, next: %a)"
         pp_letter l
         pp_period pool.letterpoolos.current_period
         pp_period pool.letterpoolos.next_period ;
-      (period_change,false) end
+      (None, false) end
 
 let inject_word
       (pool:mempool)

@@ -2,6 +2,8 @@ open Messages
 open Utils
 
 let broadcast ?except braodcastpool msg =
+  Log.log_info "@[<v 2> Braodcasting %a@]@."
+    Messages.pp_message msg;
   Pool.iter_p braodcastpool (fun (point,(conn:Netpool.conn)) ->
       if unopt_map ~default:true (fun p -> point != p) except then
         Messages.send msg conn.fd
@@ -61,6 +63,7 @@ let answer
   Log.log_info "Processing messages @[%a@]@." Messages.pp_message msg;
   match msg with
   | Register id ->
+     Mempool.register st.mempoolos id ;
      let lettres = Mempool.gen_letters st.mempoolos id in
      Messages.send
        (Messages.Letters_bag lettres)
@@ -106,7 +109,8 @@ let answer
              Some p when Mempool.turn_by_turn st.mempoolos ->
                 broadcast st.netpoolos.poolos
                   (Messages.Next_turn  p)
-             | _ -> Lwt.return_unit
+           | _ -> Log.log_info "Turn not complete @." ;
+              Lwt.return_unit
        end else begin
          Log.log_warn "Injection failed for letter %a" pp_letter l;
          Lwt.return_unit

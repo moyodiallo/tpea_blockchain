@@ -36,8 +36,9 @@ let receive ?check () =
 exception Test_failure of (string*string)
 
 let rec checker ~hard ?(ignore_msgs=fun _ -> false) test sent received =
-  if ignore_msgs received then
-    receive ~check:(checker ~hard ~ignore_msgs test sent) ()
+  if ignore_msgs received then begin
+      Log.log_info "Ignoring %a@." Messages.pp_message received ;
+      receive ~check:(checker ~hard ~ignore_msgs test sent) () end
   else begin
       if test (sent, received) then
         Log.log_success
@@ -98,6 +99,7 @@ let no_some v =
 let send_some v =
   Log.log_info "Sending %a@."
     Messages.pp_message v;
+
   no_some @@ send v
 let test ?(hard=false) () =
   let (pk,sk) =  Crypto.genkeys () in
@@ -117,6 +119,13 @@ let test ?(hard=false) () =
 
   let bag = Author.{author = pk ; sk; content=['a';'b']} in
   let letter = Author.make_letter_on_hash bag 0 Author.genesis 'a' in
+  let message = Messages.Inject_letter letter in
+  let%lwt () = send_some message in
+  let getpool = Messages.Get_letterpool_since 0 in
+  let%lwt () = send_some getpool in
+  let%lwt () = receive ~check:(check_inject_letter ~hard message) () in
+
+  let letter = Author.make_letter_on_hash bag 1 Author.genesis 'b' in
   let message = Messages.Inject_letter letter in
   let%lwt () = send_some message in
   let getpool = Messages.Get_letterpool_since 0 in
