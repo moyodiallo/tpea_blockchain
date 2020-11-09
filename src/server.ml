@@ -22,72 +22,87 @@
 (* DEALINGS IN THE SOFTWARE.                                                 *)
 (*                                                                           *)
 (*****************************************************************************)
-type t = {
-  socket: Lwt_unix.file_descr ;
-  netpoolos: Netpool.pool;
-  mempoolos: Mempool.mempool
-  }
 
-let rec worker_loop ~check_sigs st =
+(** the server handle a pool of connections and a mempool  *)
+type t = {
+  socket : Lwt_unix.file_descr;
+  netpoolos : Netpool.pool;
+  mempoolos : Mempool.mempool;
+}
+
+(** for each new connection, the server accept it in its netpool.
+    The communication protocole is defined by the Answerer.
+    [see Netpool.accept, Answerer.answer]
+  *)
+let rec worker_loop st =
   let%lwt () = Lwt_unix.yield () in
-  let%lwt(fd, addr) = Lwt_unix.accept st.socket in
+  let%lwt (fd, addr) = Lwt_unix.accept st.socket in
   match addr with
   | Lwt_unix.ADDR_UNIX _ -> assert false
   | Lwt_unix.ADDR_INET (addr, port) ->
-     Lwt.async (fun () ->
-         Netpool.accept
-           ~check_sigs
-           ~callback:Answerer.answer
-           st.netpoolos
-           st.mempoolos
-           fd
-           (addr, port)) ;
-     worker_loop ~check_sigs st
+      Lwt.async (fun () ->
+          Netpool.accept
+            ~callback:Answerer.answer
+            st.netpoolos
+            st.mempoolos
+            fd
+            (addr, port)) ;
+      worker_loop st
 
+(** Creating the socket on wich se server is listening   *)
 let create_listening_socket ~backlog ?(addr = Unix.inet6_addr_any) port =
   let main_socket = Lwt_unix.(socket PF_INET6 SOCK_STREAM 0) in
   Lwt_unix.(setsockopt main_socket SO_REUSEADDR true) ;
-  let%lwt () =
-    Lwt_unix.bind main_socket
-      Unix.(ADDR_INET (addr, port)) in
+  let%lwt () = Lwt_unix.bind main_socket Unix.(ADDR_INET (addr, port)) in
   Lwt_unix.listen main_socket backlog ;
   Lwt.return main_socket
 
+(** Opening the listen socket and creating the state of the server.  *)
 let create ?addr ~backlog ~netpoolos ~mempoolos port =
-  Lwt.catch begin fun () ->
-    let%lwt socket =
-      create_listening_socket ~backlog ?addr port in
-    let st = { socket ; netpoolos;mempoolos } in
-    Lwt.return st
-    end begin fun exn ->
-    Log.log_error
-      "@[<v 2>Cannot accept incoming connections@ %s@ address %s:%a@.@]"
-      (Printexc.to_string exn)
-      (Unix.string_of_inet_addr (Option.value addr ~default:Unix.inet6_addr_any))
-      Format.pp_print_int port ;
-    Lwt.fail exn
+  Lwt.catch
+    (fun () ->
+      let%lwt socket = create_listening_socket ~backlog ?addr port in
+      let st = { socket; netpoolos; mempoolos } in
+      Lwt.return st)
+    (fun exn ->
+      Log.log_error
+        "@[<v 2>Cannot accept incoming connections@ %s@ address %s:%a@.@]"
+        (Printexc.to_string exn)
+        (Unix.string_of_inet_addr
+           (Option.value addr ~default:Unix.inet6_addr_any))
+        Format.pp_print_int
+        port ;
+      Lwt.fail exn)
 
-    end
-
-let activate ~check_sigs st =
-  Lwt.catch (fun () ->
-      Log.log_info "Server's welcome loop started@.";
-      let%lwt _worker = worker_loop ~check_sigs st in
-      Log.log_info "Server's welcome loop stopped@.";
-      Lwt.return_unit
-    )
-    ( fun _ ->
-      Log.log_info "Server's welcome loop stopped@.";
+(** Running the server worker  *)
+let activate st =
+  Lwt.catch
+    (fun () ->
+      Log.log_info "Server's welcome loop started@." ;
+      let%lwt _worker = worker_loop st in
+      Log.log_info "Server's welcome loop stopped@." ;
+      Lwt.return_unit)
+    (fun _ ->
+      Log.log_info "Server's welcome loop stopped@." ;
       Lwt_unix.close st.socket)
 
+(** Running the full server.
+ [addr]: binding address
+ [turn_by_turn] : is the server in turn by turn mode ?
+ [nb_rounds]: how many rounds do we play ?
+ [timeout]: time before switching to next turn even if some
+            participant didn't inject their operation
+ [port]: listening port
+*)
 let serve ?addr ~check_sigs ~turn_by_turn ~nb_rounds ?timeout ~port () =
-  Log.log_info "Creating pools and server@." ;
+  Log.log_info
+    "Creating pools and server in %s mode.@."
+    (if turn_by_turn then "in turn-by-turn" else "free turn") ;
   let netpoolos = Netpool.create () in
-  let mempoolos = Mempool.create ~turn_by_turn ~nb_rounds ?timeout () in
+  let mempoolos =
+    Mempool.create ~check_sigs ~turn_by_turn ~nb_rounds ?timeout ()
+  in
   let%lwt server = create ?addr ~backlog:100 ~netpoolos ~mempoolos port in
   Log.log_info "Activating server@." ;
-  let%lwt _ = activate ~check_sigs server in
+  let%lwt _ = activate server in
   Lwt.return_unit
-      
-   
-    

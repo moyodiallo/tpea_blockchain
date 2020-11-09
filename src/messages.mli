@@ -1,44 +1,26 @@
-open Crypto
+open Id
+open Letter
+open Word
 
-type period = int [@@deriving yojson,show]
+type letterpool = {
+  current_period : period;
+  next_period : period;
+  letters : letter list;
+}
+[@@deriving yojson, show]
 
-type author_id = pk  [@@deriving yojson,show]
+type wordpool = {
+  current_period : period;
+  next_period : period;
+  words : (Crypto.hash * word) list;
+}
+[@@deriving yojson, show]
 
-type politician_id = pk  [@@deriving yojson,show]
+type diff_letterpool_arg = { since : period; letterpool : letterpool }
+[@@deriving yojson, show]
 
-
-type letter =
-  { letter : char ;
-    period : period ;
-    head : hash ;
-    author : author_id ;
-    signature : signature
-  }
-    [@@deriving yojson,show]
-
-val  letter_to_bigstring : letter -> Bigstring.t
-  
-type word = {
-    word : letter list ;
-    head : hash ;
-    politician : politician_id ;
-    signature : signature
-  } [@@deriving yojson,show]
-
-
-
-type letterpool =
-  {mutable current_period : period ;
-   mutable next_period : period ;
-   mutable letters : (int*letter) list } [@@deriving yojson,show]
-
-type wordpool =
-  {mutable current_period : period ;
-   mutable next_period : period ;
-   mutable words : (int*word) list } [@@deriving yojson,show]
-
-type diff_letterpool_arg = {since : period; letterpool : letterpool}[@@deriving yojson,show]
-type diff_wordpool_arg = {since : period; wordpool : wordpool}[@@deriving yojson,show]
+type diff_wordpool_arg = { since : period; wordpool : wordpool }
+[@@deriving yojson, show]
 
 type message =
   | Register of author_id
@@ -48,8 +30,8 @@ type message =
   | Letters_bag of char list
   | Full_letterpool of letterpool
   | Full_wordpool of wordpool
-(*   | New_letter of letter *)
-(*   | New_word of word *)
+  (*   | New_letter of letter *)
+  (*   | New_word of word *)
   | Diff_letterpool of diff_letterpool_arg
   | Diff_wordpool of diff_wordpool_arg
   | Get_full_letterpool
@@ -59,8 +41,15 @@ type message =
   | Inject_letter of letter
   | Inject_word of word
   | Inject_raw_op of bytes
-                       [@@deriving yojson,show]
+[@@deriving yojson, show]
 
-val receive : ?verbose:bool -> Lwt_unix.file_descr -> (message, string) result Lwt.t
+val receive : ?verbose:bool -> Unix.file_descr -> (message, string) result
 
-val send : ?verbose:bool -> message -> Lwt_unix.file_descr -> unit Lwt.t
+val send : ?verbose:bool -> message -> Unix.file_descr -> unit
+
+val receive_async :
+  ?verbose:bool -> Lwt_unix.file_descr -> (message, string) result Lwt.t
+
+val send_async : ?verbose:bool -> message -> Lwt_unix.file_descr -> unit Lwt.t
+
+val print_type_message : unit -> unit

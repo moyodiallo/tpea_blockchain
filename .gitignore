@@ -1,7 +1,8 @@
-.merlin
 dune-project
+.merlin
+*~
+_build/
 *.install
-/_build
 scrabblos-client
 scrabblos-proxy
 scrabblos-server
