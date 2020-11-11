@@ -2,8 +2,9 @@
 
 ## Implementation tour par tour
 
-## Description des scenarios
+![](./images/schema_serveur_central.png)
 
+## Description des scenarios
 
 ## Implementation roue libre
 
