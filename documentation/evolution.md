@@ -1,16 +1,11 @@
-# IMPLEMENTATION TOUR PAR PAR
+# DOCUMENTATION DETAILLER
 
-|-----------     A1     -------------      P1       ---------------
-|           | ------->  |           | <----------   |             |
-|   Auteurs |           | Serveur   |               | Politiciens |
-|           |    A2     |           |       P2      |             |  
-|           | <-------  |           | ----------->  |             |
-|-----------            -------------               ---------------
+## Implementation tour par tour
 
 ## Description des scenarios
 
 
-# IMPLEMENTATION ROUE LIBRE
+## Implementation roue libre
 
-# IMPLEMENTATION SANS SERVEUR CENTRAL
+## Implementation sans serveur centrale
 
