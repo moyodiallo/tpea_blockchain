@@ -1,12 +1,31 @@
-# DOCUMENTATION DETAILLER
+# Evolution du projet
 
-## Implementation tour par tour
+## Taches a effectuees
+- [X] Implementation tour a tour avec serveur central
+    - [] 
+- [ ] Implementation en roue libre
+- [ ] Implementation sans serveur central
+    - [ ] en PoW
+    - [ ] en Pos
 
-![](./images/schema_serveur_central.png)
+## Reponses aux problematiques
 
-## Description des scenarios
+### Comment s'assurer que l'auteur n'injecte pas plusieurs lettres pour un bloc?
+->Remplir
 
-## Implementation roue libre
+### Descriptions de l'implementation des fonctions src/consensus.ml
+->Remplir
 
-## Implementation sans serveur centrale
+### En "Roue libre" quelles modification faut-il pour l'algorithme de consensus?
+->Remplir
 
+### L'implementation resite t-elle aux attaques? Si non quelles modifs faut-il pour resister?
+->Remplir
+
+### Comment modifier le system pour eliminer le serveur central(PoW ou Pos)?
+->Remplir
+
+### Comment modifier l'algorithme de consensus, passage Pow -> Pos ou Pos -> Pow
+->Remplir
+
+### 
