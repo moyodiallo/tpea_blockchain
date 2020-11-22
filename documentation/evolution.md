@@ -1,8 +1,7 @@
 # Evolution du projet
 
 ## Taches a effectuees
-- [X] Implementation tour a tour avec serveur central
-    - [] 
+- [ ] Implementation tour a tour avec serveur central 
 - [ ] Implementation en roue libre
 - [ ] Implementation sans serveur central
     - [ ] en PoW
