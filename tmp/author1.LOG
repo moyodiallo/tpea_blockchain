@@ -1,0 +1,35 @@
+[0;37m[info]Sending (Messages.Register
+           7e80e4e50ad819a203cb080f4d5f988faf89cfe5e57085c7f62fdcad9b242148)
+[m[0;37m[info]Sending message (Messages.Register
+                   7e80e4e50ad819a203cb080f4d5f988faf89cfe5e57085c7f62fdcad9b242148)
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 817 chars
+[m[0;37m[info]All data read, processing 817 chars
+[m[0;37m[info]Received (Messages.Letters_bag
+            ['a'; 'g'; 'w'; 'l'; 'l'; 'f'; 'h'; 'w'; 'd'; 'e'; 'm'; 'q'; 'b';
+              'w'; 'w'; 'h'; 'h'; 'j'; 'i'; 'e'; 'h'; 'n'; 'v'; 'd'; 'g';
+              'y'; 'y'; 'b'; 'q'; 'k'; 'w'; 'q'; 'x'; 'j'; 'q'; 'q'; 'b';
+              'j'; 'x'; 'a'; 'a'; 'y'; 'v'; 'c'; 'u'; 'u'; 'k'; 'x'; 's';
+              's'; 'd'; 'e'; 'c'; 'w'; 'u'; 'a'; 'c'; 'j'; 'w'; 'l'; 'e';
+              'i'; 'v'; 'v'; 'o'; 'g'; 'm'; 'u'; 'o'; 'x'; 'x'; 't'; 'k';
+              'k'; 'n'; 'l'; 'u'; 'e'; 'k'; 'x'; 'n'; 'x'; 'v'; 'n'; 'u';
+              'g'; 'y'; 't'; 'o'; 'x'; 'k'; 'b'; 'x'; 'g'; 'c'; 'i'; 'm';
+              'n'; 'j'; 'h'; 'h'; 's'; 'q'; 'm'; 's'; 'k'; 'k'; 'a'; 'p';
+              'd'; 'u'; 'p'; 'y'; 'k'; 'w'; 'i'; 'e'; 'f'; 'l'; 'w'; 't';
+              'd'; 'a'; 'u'; 'y'; 'v'; 'm'; 't'; 'r'; 'o'; 'x'; 'p'; 'f';
+              'e'; 'e'; 'y'; 'r'; 'm'; 'u'; 'r'; 'b'; 's'; 'h'; 'f'; 'l';
+              'b'; 'x'; 'd'; 'c'; 'q'; 'j'; 'i'; 'o'; 'm'; 'm'; 'f'; 'l';
+              'u'; 'b'; 'g'; 'w'; 'x'; 'h'; 'f'; 'p'; 'a'; 'b'; 'q'; 'k';
+              'w'; 'w'; 'e'; 'g'; 'q'; 'y'; 'w'; 'j'; 'l'; 'p'; 's'; 'k';
+              'd'; 'p'; 's'; 'x'; 'f'; 'k'; 'u'; 'e'; 'x'; 'e'; 'd'; 'f';
+              'v'; 'v'; 'u'; 'v'; 'j'; 'n'; 'r'])
+[m[0;37m[info]Sending Messages.Get_full_wordpool
+[m[0;37m[info]Sending message Messages.Get_full_wordpool
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 65 chars
+[m[0;37m[info]All data read, processing 65 chars
+[m[0;37m[info]Received (Messages.Full_wordpool
+            { Messages.current_period = 1; next_period = 2; words = [] })
+[m

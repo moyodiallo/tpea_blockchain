@@ -1,0 +1,234 @@
+[0;37m[info]Creating pools and server in in turn-by-turn mode.
+[m[0;37m[info]Activating server
+[m[0;37m[info]Server's welcome loop started
+[m[0;37m[info]STARTING: Answering loop started for ::1:46252
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 79 chars
+[m[0;37m[info]All data read, processing 79 chars
+[m[0;37m[info]Processing messages (Messages.Register
+                       df7923c22eb72e9d50aae2784ab5aa428574cfd53892a04834e0f391c36426c1)
+[m[0;37m[info]Sending message (Messages.Letters_bag
+                   ['g'; 'w'; 's'; 'm'; 'l'; 'e'; 'r'; 'i'; 's'; 'g'; 'k';
+                     'r'; 'n'; 'q'; 'u'; 'a'; 'e'; 'b'; 'r'; 'q'; 'u'; 'k';
+                     'p'; 'h'; 'd'; 'i'; 'g'; 'h'; 'r'; 'd'; 'h'; 'h'; 'l';
+                     's'; 'u'; 'e'; 's'; 'b'; 'h'; 'k'; 'p'; 'n'; 'm'; 'f';
+                     'u'; 'u'; 'b'; 'n'; 'l'; 'p'; 'x'; 'x'; 'c'; 'l'; 'x';
+                     'm'; 'n'; 's'; 'u'; 's'; 'b'; 'v'; 'b'; 'y'; 'm'; 's';
+                     'r'; 'o'; 'o'; 'y'; 'o'; 'e'; 'g'; 'f'; 'b'; 'i'; 'w';
+                     'g'; 'e'; 'v'; 'l'; 'j'; 'v'; 'b'; 'i'; 'm'; 'i'; 't';
+                     'a'; 'g'; 'y'; 'p'; 'h'; 'v'; 'l'; 'l'; 'x'; 'y'; 'v';
+                     'l'; 'r'; 'a'; 'n'; 'e'; 'n'; 'g'; 'b'; 's'; 'i'; 'u';
+                     'o'; 'n'; 'i'; 'd'; 'v'; 'y'; 'r'; 'h'; 'u'; 't'; 'v';
+                     'd'; 'i'; 'l'; 'd'; 'k'; 'g'; 'w'; 'y'; 's'; 'q'; 'l';
+                     'k'; 'u'; 'p'; 'h'; 'i'; 't'; 'c'; 'p'; 'w'; 'n'; 'l';
+                     'b'; 't'; 'j'; 'b'; 'y'; 'i'; 'n'; 's'; 'e'; 'v'; 'u';
+                     's'; 'j'; 'u'; 'j'; 'y'; 'u'; 'n'; 'i'; 'k'; 'w'; 'w';
+                     'h'; 'l'; 'f'; 'm'; 'y'; 'u'; 'a'; 'd'; 'v'; 't'; 'x';
+                     'x'; 'o'; 's'; 'o'; 't'; 'd'; 'g'; 'b'; 'm'; 'p'; 'd';
+                     'y'; 'k'; 'r'; 'u'; 'v'; 'u'; 'e'; 'a'; 'o'; 'q'; 'h';
+                     'k'; 't'])
+[m[0;37m[info]Message processed.
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 26 chars
+[m[0;37m[info]STARTING: Answering loop started for ::1:46254
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 79 chars
+[m[0;37m[info]All data read, processing 79 chars
+[m[0;37m[info]Processing messages (Messages.Register
+                       1a6739753de9f33d55ab9d2c824d54a9034c505661c021b263f7e8dac3939711)
+[m[0;37m[info]Sending message (Messages.Letters_bag
+                   ['o'; 'n'; 's'; 'w'; 'y'; 'm'; 'u'; 'v'; 'w'; 'd'; 'f';
+                     'o'; 'n'; 'd'; 'q'; 'n'; 'x'; 'f'; 'i'; 'n'; 'l'; 'g';
+                     'v'; 'e'; 'v'; 'i'; 'y'; 'r'; 'd'; 'c'; 'e'; 'v'; 'p';
+                     'x'; 'l'; 'y'; 't'; 'q'; 'm'; 'l'; 'g'; 'g'; 'g'; 'u';
+                     'p'; 'b'; 'n'; 'k'; 'b'; 'l'; 'w'; 'v'; 'x'; 'b'; 'j';
+                     'v'; 'y'; 'v'; 'r'; 'm'; 'u'; 't'; 'o'; 'f'; 'r'; 'h';
+                     'f'; 'n'; 'i'; 'f'; 't'; 'a'; 'p'; 'x'; 'p'; 'm'; 's';
+                     'h'; 'v'; 'g'; 's'; 'x'; 'b'; 'r'; 's'; 'b'; 'j'; 'w';
+                     'j'; 'b'; 'f'; 'r'; 'f'; 'k'; 'v'; 'j'; 'n'; 'o'; 'v';
+                     'g'; 'c'; 'j'; 'm'; 'l'; 'v'; 'w'; 'k'; 'w'; 'm'; 'd';
+                     'o'; 'm'; 'p'; 'e'; 'r'; 'j'; 'g'; 'a'; 't'; 'q'; 'n';
+                     't'; 'u'; 'h'; 'b'; 'l'; 'w'; 'v'; 'c'; 'k'; 'l'; 'q';
+                     'm'; 'w'; 'e'; 't'; 'r'; 'n'; 'e'; 'h'; 'c'; 'k'; 'f';
+                     'n'; 'e'; 'v'; 'f'; 'm'; 'n'; 'q'; 'l'; 'j'; 'l'; 'u';
+                     'o'; 'q'; 'p'; 'e'; 'a'; 'e'; 'n'; 'n'; 'x'; 'l'; 'm';
+                     'n'; 'y'; 'r'; 'f'; 'd'; 'v'; 'w'; 'u'; 'q'; 'q'; 'q';
+                     'p'; 'f'; 's'; 'o'; 'f'; 'n'; 'c'; 'n'; 'k'; 'e'; 'h';
+                     'c'; 'p'; 'a'; 'q'; 'g'; 'l'; 'b'; 'w'; 'e'; 'v'; 't';
+                     'u'; 'h'])
+[m[0;37m[info]Message processed.
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 26 chars
+[m[0;37m[info]STARTING: Answering loop started for ::1:46256
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 79 chars
+[m[0;37m[info]All data read, processing 79 chars
+[m[0;37m[info]Processing messages (Messages.Register
+                       79ea5381787a82803c0eb750803f37a0b00ca94ba5e0b5721362db72eba226f3)
+[m[0;37m[info]Sending message (Messages.Letters_bag
+                   ['a'; 'm'; 'e'; 'b'; 's'; 'k'; 'c'; 'f'; 'f'; 'i'; 'p';
+                     'i'; 'o'; 'b'; 'c'; 'o'; 'f'; 'y'; 'x'; 'p'; 'g'; 't';
+                     'e'; 'c'; 's'; 'c'; 'a'; 'w'; 's'; 'p'; 'i'; 's'; 'd';
+                     'p'; 'd'; 'a'; 'l'; 'p'; 'i'; 'r'; 'h'; 'y'; 'k'; 'w';
+                     'f'; 'k'; 'v'; 'q'; 'c'; 'w'; 'y'; 'g'; 'q'; 'b'; 'j';
+                     'f'; 'u'; 'q'; 'y'; 'k'; 'e'; 's'; 'c'; 'w'; 'w'; 'x';
+                     'h'; 'h'; 'r'; 'e'; 'a'; 'j'; 'k'; 'j'; 'x'; 'x'; 'x';
+                     't'; 'f'; 'r'; 'b'; 'p'; 'x'; 'v'; 'p'; 't'; 'c'; 'i';
+                     'h'; 'e'; 'q'; 'a'; 'u'; 'v'; 'd'; 'm'; 'e'; 'm'; 't';
+                     'j'; 'q'; 'v'; 'f'; 'y'; 'm'; 'd'; 'k'; 'g'; 'm'; 'w';
+                     'f'; 'x'; 'u'; 'u'; 'q'; 'n'; 'y'; 'h'; 'p'; 'q'; 'w';
+                     'y'; 'x'; 'b'; 't'; 'd'; 's'; 'k'; 'v'; 'y'; 'm'; 'c';
+                     'n'; 'd'; 'q'; 'm'; 'm'; 'y'; 'm'; 'q'; 't'; 't'; 'l';
+                     'u'; 'p'; 'a'; 'a'; 'm'; 'v'; 'n'; 't'; 'o'; 'j'; 'r';
+                     'b'; 'k'; 'u'; 'c'; 'u'; 'e'; 'd'; 'e'; 'x'; 'q'; 'p';
+                     'j'; 'k'; 'j'; 'f'; 'p'; 'l'; 'n'; 'd'; 'a'; 'p'; 'h';
+                     'j'; 'u'; 'j'; 'g'; 'i'; 'h'; 'u'; 's'; 'u'; 'g'; 'd';
+                     'c'; 'e'; 'j'; 'e'; 'b'; 'l'; 'm'; 'u'; 'g'; 'r'; 'm';
+                     't'; 'h'])
+[m[0;37m[info]Message processed.
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 26 chars
+[m[0;37m[info]All data read, processing 26 chars
+[m[0;37m[info]Processing messages Messages.Get_full_wordpool
+[m[0;37m[info]Sending message (Messages.Full_wordpool
+                   { Messages.current_period = 1; next_period = 2; words = []
+                     })
+[m[0;37m[info]Message processed.
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]All data read, processing 26 chars
+[m[0;37m[info]Processing messages Messages.Get_full_wordpool
+[m[0;37m[info]Sending message (Messages.Full_wordpool
+                   { Messages.current_period = 1; next_period = 2; words = []
+                     })
+[m[0;37m[info]Message processed.
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]All data read, processing 26 chars
+[m[0;37m[info]Processing messages Messages.Get_full_wordpool
+[m[0;37m[info]Sending message (Messages.Full_wordpool
+                   { Messages.current_period = 1; next_period = 2; words = []
+                     })
+[m[0;37m[info]Message processed.
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]STARTING: Answering loop started for ::1:46258
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 79 chars
+[m[0;37m[info]All data read, processing 79 chars
+[m[0;37m[info]Processing messages (Messages.Register
+                       2a5b6c21325cc0eeec3d3ead0e1b93a10e76859e86f29a18035a1f6d1ab489f2)
+[m[0;37m[info]Sending message (Messages.Letters_bag
+                   ['b'; 'd'; 'u'; 'q'; 's'; 'y'; 'o'; 'r'; 'r'; 'p'; 'm';
+                     'e'; 'p'; 'y'; 's'; 'l'; 't'; 'h'; 'u'; 'i'; 'n'; 'p';
+                     'w'; 't'; 'w'; 'a'; 'e'; 's'; 'r'; 'c'; 'y'; 'c'; 'u';
+                     'j'; 'x'; 't'; 'i'; 'o'; 'k'; 'k'; 'c'; 'c'; 'l'; 'w';
+                     'y'; 'c'; 'w'; 'o'; 'y'; 'x'; 'g'; 'c'; 'u'; 'y'; 'g';
+                     's'; 's'; 'c'; 'q'; 'q'; 'a'; 'x'; 'd'; 'm'; 'j'; 'e';
+                     'l'; 'f'; 'f'; 'g'; 'k'; 'x'; 'p'; 'm'; 'j'; 'x'; 'a';
+                     'y'; 'g'; 'p'; 'd'; 'g'; 'g'; 'i'; 'j'; 'o'; 'g'; 'w';
+                     'r'; 'a'; 'd'; 'b'; 'p'; 'm'; 'o'; 'e'; 'p'; 'v'; 't';
+                     'h'; 'a'; 'm'; 'v'; 'm'; 'f'; 'f'; 'e'; 's'; 'v'; 'r';
+                     'o'; 'v'; 'h'; 'o'; 'v'; 'q'; 'a'; 'm'; 'c'; 'b'; 'e';
+                     'q'; 'g'; 'd'; 'p'; 'd'; 'x'; 'q'; 'k'; 'f'; 'p'; 'k';
+                     'f'; 'a'; 's'; 'k'; 'c'; 'x'; 'q'; 'h'; 'i'; 'r'; 'w';
+                     's'; 's'; 'r'; 'r'; 'q'; 'u'; 'g'; 's'; 'n'; 'x'; 'f';
+                     't'; 'q'; 'a'; 'v'; 'r'; 'p'; 't'; 'n'; 'h'; 'p'; 's';
+                     'j'; 'w'; 'p'; 'y'; 'x'; 'b'; 't'; 'v'; 'v'; 'g'; 'a';
+                     'y'; 'q'; 'm'; 'k'; 'm'; 'x'; 'c'; 't'; 'u'; 'n'; 'g';
+                     'e'; 'o'; 'w'; 'o'; 'l'; 'l'; 'f'; 'o'; 'd'; 'l'; 'b';
+                     'p'; 'x'])
+[m[0;37m[info]Message processed.
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 26 chars
+[m[0;37m[info]STARTING: Answering loop started for ::1:46260
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 79 chars
+[m[0;37m[info]All data read, processing 79 chars
+[m[0;37m[info]Processing messages (Messages.Register
+                       7e80e4e50ad819a203cb080f4d5f988faf89cfe5e57085c7f62fdcad9b242148)
+[m[0;37m[info]Sending message (Messages.Letters_bag
+                   ['a'; 'g'; 'w'; 'l'; 'l'; 'f'; 'h'; 'w'; 'd'; 'e'; 'm';
+                     'q'; 'b'; 'w'; 'w'; 'h'; 'h'; 'j'; 'i'; 'e'; 'h'; 'n';
+                     'v'; 'd'; 'g'; 'y'; 'y'; 'b'; 'q'; 'k'; 'w'; 'q'; 'x';
+                     'j'; 'q'; 'q'; 'b'; 'j'; 'x'; 'a'; 'a'; 'y'; 'v'; 'c';
+                     'u'; 'u'; 'k'; 'x'; 's'; 's'; 'd'; 'e'; 'c'; 'w'; 'u';
+                     'a'; 'c'; 'j'; 'w'; 'l'; 'e'; 'i'; 'v'; 'v'; 'o'; 'g';
+                     'm'; 'u'; 'o'; 'x'; 'x'; 't'; 'k'; 'k'; 'n'; 'l'; 'u';
+                     'e'; 'k'; 'x'; 'n'; 'x'; 'v'; 'n'; 'u'; 'g'; 'y'; 't';
+                     'o'; 'x'; 'k'; 'b'; 'x'; 'g'; 'c'; 'i'; 'm'; 'n'; 'j';
+                     'h'; 'h'; 's'; 'q'; 'm'; 's'; 'k'; 'k'; 'a'; 'p'; 'd';
+                     'u'; 'p'; 'y'; 'k'; 'w'; 'i'; 'e'; 'f'; 'l'; 'w'; 't';
+                     'd'; 'a'; 'u'; 'y'; 'v'; 'm'; 't'; 'r'; 'o'; 'x'; 'p';
+                     'f'; 'e'; 'e'; 'y'; 'r'; 'm'; 'u'; 'r'; 'b'; 's'; 'h';
+                     'f'; 'l'; 'b'; 'x'; 'd'; 'c'; 'q'; 'j'; 'i'; 'o'; 'm';
+                     'm'; 'f'; 'l'; 'u'; 'b'; 'g'; 'w'; 'x'; 'h'; 'f'; 'p';
+                     'a'; 'b'; 'q'; 'k'; 'w'; 'w'; 'e'; 'g'; 'q'; 'y'; 'w';
+                     'j'; 'l'; 'p'; 's'; 'k'; 'd'; 'p'; 's'; 'x'; 'f'; 'k';
+                     'u'; 'e'; 'x'; 'e'; 'd'; 'f'; 'v'; 'v'; 'u'; 'v'; 'j';
+                     'n'; 'r'])
+[m[0;37m[info]Message processed.
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]Reading 26 chars
+[m[[1;31mError[m] Reading failed:  read 0 instead of 8
+                           chars : 
+d8ac74b1ca550000
+[0;37m[info]STOPPING: answerer for ::1:46254
+[m[[1;31mError[m] Reading failed:  read 0 instead of 8
+                           chars : 
+0300000000000000
+[0;37m[info]STOPPING: answerer for ::1:46252
+[m[[1;31mError[m] Reading failed:  read 0 instead of 8
+                           chars : 
+a0a974b1ca550000
+[0;37m[info]STOPPING: answerer for ::1:46256
+[m[0;37m[info]All data read, processing 26 chars
+[m[0;37m[info]Processing messages Messages.Get_full_wordpool
+[m[0;37m[info]Sending message (Messages.Full_wordpool
+                   { Messages.current_period = 1; next_period = 2; words = []
+                     })
+[m[0;37m[info]Message processed.
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[0;37m[info]All data read, processing 26 chars
+[m[0;37m[info]Processing messages Messages.Get_full_wordpool
+[m[0;37m[info]Sending message (Messages.Full_wordpool
+                   { Messages.current_period = 1; next_period = 2; words = []
+                     })
+[m[0;37m[info]Message processed.
+[m[0;37m[info]Waiting for messages.
+[m[0;37m[info]receiving Message.
+[m[0;37m[info]reading size.
+[m[[1;31mError[m] Reading failed:  read 0 instead of 8
+                           chars : 
+c8212bed1f7f0000
+[0;37m[info]STOPPING: answerer for ::1:46258
+[m[[1;31mError[m] Reading failed:  read 0 instead of 8
+                           chars : 
+000c000000000000
+[0;37m[info]STOPPING: answerer for ::1:46260
+[m
