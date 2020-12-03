@@ -92,17 +92,24 @@ let run ?(max_iter = 0) () =
     if max_iter = 0 then ()
     else (
       ( match Client_utils.receive () with
-        (* Injection d'une lettre dans le serveur*)
+        (* Injection d'une lettre dans le serveur *)
         | Messages.Inject_letter l ->
       (*Ajout de la lettre dans le store des lettres *)
            Store.add_letter store_letter l;
-           (*  *) 
+           (* Ajout du mot *) 
            Option.iter
-           
-           
-             
-           
-    )
+            (fun head ->
+              if head = w then (
+                Log.log_info "Head updated to incoming word %a@." Word.pp w ;
+                send_new_word st level)
+              else Log.log_info "incoming word %a not a new head@." Word.pp w)
+            (Consensus.head ~level:(!level - 1) store)
+        | Messages.Next_turn p -> level :=p
+        | Messages.Inject_letter _ | _ -> () ) ;
+      loop (max_iter - 1) )
+  in
+  loop max_iter
+
   
 
 let _ =
