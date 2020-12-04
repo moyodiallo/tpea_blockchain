@@ -38,6 +38,7 @@ let send_new_word (state (pol, store, letters_s,_)) level =
 
 
 
+(*
 (* Vérification qu'il n'y a qu'une lettre soumise par auteur *) 
 let check_valid_letter (letter_store (_, let_tables)) new_letter = 
       Hashtbl.fold(k, v, acc -> check_valid_letter_unit v new_letter acc) let_tables true
@@ -46,8 +47,7 @@ let check_valid_letter (letter_store (_, let_tables)) new_letter =
 let check_valid_letter_unit (letter _ _ auth _) (letter _ _ auth2 _) acc = 
   | acc == false -> false
   | otherwise -> auth != auth2 
-                
-      
+ *)              
   
 let run ?(max_iter = 0) () =
   (* Generate public/secret keys *)
