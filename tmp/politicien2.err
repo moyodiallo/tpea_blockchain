@@ -1,0 +1,6 @@
+Error: Dependency cycle between the following files:
+   _build/default/src/.main_server.eobjs/dune__exe__Messages.intf.all-deps
+-> _build/default/src/.main_server.eobjs/dune__exe__Client_utils.impl.all-deps
+-> _build/default/src/.main_server.eobjs/dune__exe__Politicien.impl.all-deps
+-> _build/default/src/.main_server.eobjs/dune__exe__Word.impl.all-deps
+-> _build/default/src/.main_server.eobjs/dune__exe__Messages.intf.all-deps

@@ -81,6 +81,7 @@ let run ?(max_iter = 0) () =
   let politic = politician sk pk in
   (* Construction de l'état *)
   let st = state ( politic, store, store_letter,[] ) in
+  
   send_new_word st level;
                                                                                                    
   

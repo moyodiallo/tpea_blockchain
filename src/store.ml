@@ -50,3 +50,5 @@ let add_letters (st : letter_store) (ls : Letter.t list) =
 let get_letters (st : letter_store) h = Hashtbl.find_all st.letters_table h
 
 let length st = Hashtbl.length st.words_table
+
+let get_words_table (_,words_table) = words_table
