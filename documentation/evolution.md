@@ -10,9 +10,10 @@
 ## Reponses aux problematiques
 
 ### Comment s'assurer que l'auteur n'injecte pas plusieurs lettres pour un bloc?
-    - Dans le tour par tour, si un auteur inject plusieurs lettres, il a plus d'avantage de point donc 
-    le jeux n'est pas equilibre pour eviter cela, le serveur central verifie s'il deja injecter un mot 
-    avant de le propager dans le reseaux. 
+    - Un fois la lettre recu par le serveur, il verifie 
+    si l'auteur n'avait pas envoyer une lettre du tour courant.
+    pour etre plus precis dans mempool.ml partager par le serveur et le client
+    on rajoute la contrainte dans la fonction "inject_letter" 
 
 ### Descriptions de l'implementation des fonctions src/consensus.ml
     Dans le consensu chaque mots est lie a un score
@@ -36,17 +37,14 @@
 
 * En roue libre, est-ce que les auteurs a leur tours peuvent soumettre des lettres a tout moment ?
 
-* la fonction "fitness( st:store_word w:word)" dans "consensus.ml" calcul t'elle le score le 
-total de "w" à genesis(mot de depart)?
+* la fonction "fitness( st:store_word w:word)" dans "consensus.ml" calcul t'elle le score total de "w" à genesis(mot de depart)?
 
-* Pour le peer-to-peer sans serveur central a quelle moment on considere de passer a la periode
-suivant pour miner le prochain block:
+* Pour le peer-to-peer sans serveur central a quelle moment on considere de passer a la periode suivant pour miner le prochain block:
     - Est-ce quand tous les auteurs auront tous soumis une lettre
     
     - Ou lorsque le temps de la periode a laquelle on se trouve s'est écoulé et qu'on ait obtenu au moins un mot donné par un politicien.
     
-    - En integrant sois PoW est-ce que les regles de jeux change? ou qu'est-ce qu'il faut modif 
-    dans les regles, puisque que le PoW est quelque chose de tres different.
+    - En integrant sois PoW est-ce que les regles de jeux change? ou qu'est-ce qu'il faut modif  dans les regles, puisque que le PoW est quelque chose de tres different ou on essaie d'associer les deux.
     
     - En integrant PoS les regles du jeux peuvent etre intact seul la partie du choix de la tete reste à determiner selon les votes des participants par exemple.
 

@@ -176,7 +176,7 @@ let next_period pool =
     let got_all = Utils.included pool.registered injecters in
     if got_all then Log.log_info "Got all letters" ;
     if timeout then Log.log_info "Timeout" ;
-    if _non_empty_word_pool &&  got_all || timeout then (
+    if _non_empty_word_pool &&  (got_all || timeout) then (
       let current_period = pool.current_period + 1 in
       let next_period = current_period + 1 in
       Log.log_info_continue ": next turn (%d) !@." current_period ;
@@ -195,10 +195,17 @@ let next_period pool =
       None )
 
 let inject_letter (pool : mempool) (l : letter) =
-  Log.log_info "[mempool] injecting letter@." ;
-  let injected = add_letter pool l in
-  let period_change = next_period pool in
-  (period_change, injected)
+  if List.filter 
+      (fun (k,lt) -> k=l.level && lt.author = l.author) 
+      (pool.letterpoolos.letters) 
+    != [] 
+  then
+    (None,false)
+  else
+    (Log.log_info "[mempool] injecting letter@." ;
+    let injected = add_letter pool l in
+    let period_change = next_period pool in
+    (period_change, injected))
 
 let inject_word (pool : mempool) (w : word) =
   let period_change = next_period pool in

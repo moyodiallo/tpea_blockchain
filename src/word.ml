@@ -1,7 +1,6 @@
 open Crypto
 open Letter
 open Id
-open Politicien
    
 type word = {
   word : letter list;
@@ -48,9 +47,9 @@ let check_signature w =
 
 let make ~(word : letter list) ~(head : hash) ~(level : int) ~(pk : Crypto.pk)
       ~(sk : Crypto.sk) =
-  let politician = (Politicien.politicien sk pk) in
-  let msg = pre_bigstring ~word ~level ~head ~politician in
-  let signature = sign ~sk ~msg in
-  {word; level; head; politician; signature }
+    let politician = pk in
+    let msg = pre_bigstring ~word ~head ~level ~politician in
+    let signature = sign ~sk ~msg in
+    { word; head; level; politician; signature }
 
 let hash word = Crypto.hash (to_bigstring word)

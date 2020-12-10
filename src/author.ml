@@ -9,7 +9,7 @@ let make_letter_on_block sk pk level block letter : letter =
   let head_hash = hash block in
   make_letter_on_hash sk pk level head_hash letter
 
-let random_char () = Random.int (122 - 65) + 65 |> Char.chr
+let random_char () = Random.int (122 - 97) + 97 |> Char.chr
 
 let send_new_letter sk pk level store =
   (* Get blockchain head *)
@@ -76,14 +76,15 @@ let run ?(max_iter = 0) () =
                 send_new_letter sk pk !level store )
               else Log.log_info "incoming word %a not a new head@." Word.pp w)
             (Consensus.head ~level:(!level - 1) store)
-      | Messages.Next_turn p -> level := p
-      | Messages.Inject_letter _ | _ -> () ) ;
+      | Messages.Next_turn p -> level := p; send_new_letter sk pk !level store
+      | Messages.Inject_letter _ | _ -> () );
       loop (max_iter - 1) )
   in
   loop max_iter
 
 let _ =
   let main =
+    Log.log_info "author";
     Random.self_init () ;
     let () = Client_utils.connect () in
     run ~max_iter:(-1) ()
