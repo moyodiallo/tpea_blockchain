@@ -15,14 +15,12 @@ let shuffle_word (letters:letter list) limit =
 
 let verify_string_in_dictionary word_string dict_words = 
   let len = String.length word_string in 
-  if len >= 1  && len <=10 then
-    List.mem word_string (List.nth dict_words 0)
-  else if len >=5 && len <= 15 then 
-    List.mem word_string (List.nth dict_words 1)
-  else if len >=25 && len <= 75 then
-    List.mem word_string (List.nth dict_words 2)
-  else if len >=50 && len <= 200 then
-    List.mem word_string (List.nth dict_words 3)
+  if  (len >= 1  && len <=10 && List.mem word_string (List.nth dict_words 0)) ||
+      (len >=5 && len <= 15 && List.mem word_string (List.nth dict_words 1)) ||
+      (len >=25 && len <= 75 && List.mem word_string (List.nth dict_words 2)) ||
+      (len >=50 && len <= 200 &&  List.mem word_string (List.nth dict_words 3)) 
+  then
+    true
   else 
     false
 

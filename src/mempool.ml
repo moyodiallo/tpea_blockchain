@@ -98,6 +98,18 @@ let add_word pool word =
   if pool.check_sigs && not (Word.check_signature word) then (
     Log.log_warn "Incorrect signature for letter %a" pp_word word ;
     false )
+  else if
+    pool.turn_by_turn && word.level <> pool.wordpoolos.current_period
+  then (
+    Log.log_warn
+      "Out of timeframe word %a (current: %a, next: %a)"
+      pp_word
+      word
+      pp_period
+      pool.letterpoolos.current_period
+      pp_period
+      pool.letterpoolos.next_period ;
+    false )
   else (
     pool.wordpoolos.words <-
       (pool.current_period, (Word.hash word, word)) :: pool.wordpoolos.words ;
@@ -158,13 +170,19 @@ let register pool id =
   pool.registered <- id :: Utils.remove_first pool.registered id
 
 let next_period pool =
-  if not pool.turn_by_turn then Some 0
+  if not pool.turn_by_turn then None
   else
     let injecters =
-      List.filter
+      (List.filter
         (fun (p, _) -> p = pool.current_period)
         pool.letterpoolos.letters
       |> List.map (fun (_, { author; _ }) -> author)
+      )@(
+        List.filter
+        (fun (p, _) -> p = pool.current_period)
+        pool.wordpoolos.words
+      |> List.map (fun (_,(_,{ politician; _ })) -> politician)
+      )
     in
     let timeout =
       Utils.unopt_map
@@ -176,6 +194,11 @@ let next_period pool =
     let got_all = Utils.included pool.registered injecters in
     if got_all then Log.log_info "Got all letters" ;
     if timeout then Log.log_info "Timeout" ;
+
+    Log.log_info "timeout (%b) !@." timeout;
+    (*Log.log_info "timeout interval (%f) !@." (Option.get pool.timeout);*)
+    Log.log_info "got_all (%b) !@." got_all;
+
     if _non_empty_word_pool &&  (got_all || timeout) then (
       let current_period = pool.current_period + 1 in
       let next_period = current_period + 1 in
@@ -195,12 +218,14 @@ let next_period pool =
       None )
 
 let inject_letter (pool : mempool) (l : letter) =
+  (*verifie si l'auteur n'a pas injecter de lettre dans ce tour*)
   if List.filter 
       (fun (k,lt) -> k=l.level && lt.author = l.author) 
       (pool.letterpoolos.letters) 
     != [] 
   then
-    (None,false)
+    let period_change = next_period pool in
+      (period_change,false)
   else
     (Log.log_info "[mempool] injecting letter@." ;
     let injected = add_letter pool l in
@@ -208,5 +233,7 @@ let inject_letter (pool : mempool) (l : letter) =
     (period_change, injected))
 
 let inject_word (pool : mempool) (w : word) =
+  (*verifier si le mot est valide*)
+
   let period_change = next_period pool in
   (period_change, add_word pool w)

@@ -27,7 +27,7 @@ let rec generate_word letters times =
   if letters = [] || times = 0 then 
     None
   else
-    let m = Mining.shuffle_word letters (Random.int (List.length letters)) in
+    let m = Mining.shuffle_word letters (1 + Random.int (List.length letters)) in
       if Mining.verify_word_in_dictionary m dict_words then
         Some m 
       else 

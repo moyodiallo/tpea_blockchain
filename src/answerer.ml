@@ -120,7 +120,9 @@ let answer (st : Netpool.worker_state) (msg : (Messages.message, string) result)
       | Inject_word w -> (
           let (next_turn, _injected) = Mempool.inject_word st.mempoolos w in
           let%lwt _bcst_msg =
+            if _injected then
             broadcast ~except:st.point st.netpoolos.broadcastpoolos msg
+            else Lwt.return_unit
           in
           match next_turn with
           | Some p when Mempool.turn_by_turn st.mempoolos ->
