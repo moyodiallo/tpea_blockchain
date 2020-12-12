@@ -198,6 +198,7 @@ let next_period pool =
     Log.log_info "timeout (%b) !@." timeout;
     (*Log.log_info "timeout interval (%f) !@." (Option.get pool.timeout);*)
     Log.log_info "got_all (%b) !@." got_all;
+    Log.log_info "non_empty_word (%b) !@." _non_empty_word_pool;
 
     if _non_empty_word_pool &&  (got_all || timeout) then (
       let current_period = pool.current_period + 1 in

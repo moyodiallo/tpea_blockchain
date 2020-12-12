@@ -30,6 +30,7 @@ and worker_state = {
 
 (** Worker that handle a connection  *)
 let rec worker_loop (st : worker_state) =
+  Log.log_info "woker_loop net";
   let%lwt () = Lwt_unix.yield () in
   let%lwt message =
     let () = Log.log_info "Waiting for messages.@." in

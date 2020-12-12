@@ -39,7 +39,7 @@ let send_new_word st_letter st_word level politician =
   let letters = List.filter (fun l -> l.level = level) letters in
 
   (* le mot generer par le policticien "liste de lettre"*)
-  let letters = generate_word letters 10 in 
+  let letters = generate_word letters (-1) in 
   if letters = None then 
     ()
   else

@@ -32,7 +32,7 @@ let choose word1  word2 st =
       Some word1
     else if word1.signature > word2.signature then 
       Some word2
-    else  failwith "fail head"
+    else  Some word1 (*il s'agit du meme mot*)
 
 let head ?level (st : Store.word_store) =
   Hashtbl.fold 

@@ -56,34 +56,46 @@ let bigstring_to_int bs =
 exception Reading_failure
 
 let read_channel_a ch buf offs len =
-  let%lwt read_len = Lwt_unix.read ch buf offs len in
-  if read_len < len then
-    let _ =
-      Log.log_error
-        "Reading failed:  read %i instead of %i\n\
-        \                           chars : @ %a@."
-        read_len
-        len
-        Hex.pp
-        (Hex.of_bytes buf)
-    in
-    raise Reading_failure
-  else Lwt.return buf
+  let rec read_all ofset length times =
+    if times = 0 then 
+      let _ =
+        Log.log_error
+          "Reading failed:  read %i instead of %i\n\
+          \                           chars : @ %a@."
+          ofset
+          len
+          Hex.pp
+          (Hex.of_bytes buf)
+      in
+      raise Reading_failure
+    else
+      let%lwt read_len = Lwt_unix.read ch buf ofset length in
+      if read_len < length then 
+        read_all (read_len+ofset) (length-read_len) (times-1)
+      else 
+        Lwt.return buf
+  in read_all offs len 100
 
 let read_channel ch buf offs len =
-  let read_len = Unix.read ch buf offs len in
-  if read_len < len then
-    let _ =
-      Log.log_error
-        "Reading failed:  read %i instead of %i\n\
-        \                           chars : @ %a@."
-        read_len
-        len
-        Hex.pp
-        (Hex.of_bytes buf)
-    in
-    raise Reading_failure
-  else buf
+  let rec read_all ofset length  times =
+    if times = 0 then 
+      let _ =
+        Log.log_error
+          "Reading failed:  read %i instead of %i\n\
+          \                           chars : @ %a@."
+          ofset
+          len
+          Hex.pp
+          (Hex.of_bytes buf)
+      in
+      raise Reading_failure
+    else
+      let read_len = Unix.read ch buf ofset length in 
+      if read_len < length then 
+        read_all (read_len+ofset) (length-read_len) (times-1)
+      else 
+        buf
+  in read_all offs len 100
 
 let size_of_int = 8
 
@@ -100,12 +112,44 @@ let read_int in_ch =
 exception Writing_failure
 
 let write_channel_a ch buf ofs length =
-  let%lwt written = Lwt_unix.write ch buf ofs length in
-  if written < length then raise Writing_failure else Lwt.return_unit
+  let rec write_all ofset len times = 
+    if times = 0 then
+      let _ =
+        Log.log_error
+          "Writing failed:  write %i instead of %i\n\
+          \                           chars : @ %a@."
+          ofset
+          length
+          Hex.pp
+          (Hex.of_bytes buf)
+      in
+      raise Writing_failure 
+  else
+    let%lwt written = Lwt_unix.write ch buf ofset len in 
+      if written < len then 
+        write_all (ofset+written) (len-written) (times-1)
+      else Lwt.return_unit
+  in write_all ofs length 100
 
 let write_channel ch buf ofs length =
-  let written = Unix.write ch buf ofs length in
-  if written < length then raise Writing_failure else ()
+  let rec write_all ofset len times = 
+    if times = 0 then
+      let _ =
+        Log.log_error
+          "Writing failed:  write %i instead of %i\n\
+          \                           chars : @ %a@."
+          ofset
+          length
+          Hex.pp
+          (Hex.of_bytes buf)
+      in
+      raise Writing_failure
+    else
+      let written = Unix.write ch buf ofset len in 
+        if written < length then 
+          write_all (ofset+written) (len-written) (times-1)
+        else ()
+  in write_all ofs length 100
 
 let write_int_a out_ch i =
   let ibuf = bytes_of_int i in
